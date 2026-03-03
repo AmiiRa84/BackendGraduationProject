@@ -1,4 +1,10 @@
 
+using GraduationProject.API.Extensions;
+using GraduationProject.Domain.Contracts;
+using GraduationProject.Persistence.Data.DataSeed;
+using GraduationProject.Persistence.Data.DbContexts;
+using Microsoft.EntityFrameworkCore;
+
 namespace GraduationProject.API
 {
     public class Program
@@ -14,8 +20,17 @@ namespace GraduationProject.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            
+            builder.Services.AddDbContext<StoreDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+            builder.Services.AddScoped<IDataSeed, DataSeed>();
             var app = builder.Build();
 
+            app.MigrationDatabase();
+            app.SeedData();
+           
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

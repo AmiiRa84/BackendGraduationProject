@@ -1,0 +1,85 @@
+[
+  {
+    "title": "Brush teeth independently",
+    "description": "Child brushes teeth without help.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Complete 6-piece puzzle",
+    "description": "Child completes a 6-piece puzzle.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Sort objects by color",
+    "description": "Child sorts objects into groups based on color.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Organize school bag",
+    "description": "Child organizes books and supplies in school bag.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Wash hands properly",
+    "description": "Child washes hands following proper steps.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Trace 3 letters",
+    "description": "Child traces three letters accurately.",
+    "taskType": "Mobile",
+    "avatarTopic": "Letters & Writing"
+  },
+  {
+    "title": "Read 5 sight words",
+    "description": "Child reads 5 common sight words correctly.",
+    "taskType": "Mobile",
+    "avatarTopic": "Reading"
+  },
+  {
+    "title": "Count from 1 to 20",
+    "description": "Child counts numbers from 1 to 20 without help.",
+    "taskType": "Mobile",
+    "avatarTopic": "Numbers"
+  },
+  {
+    "title": "Express today's feeling",
+    "description": "Child chooses or says how they feel today.",
+    "taskType": "Mobile",
+    "avatarTopic": "Emotions"
+  },
+  {
+    "title": "Describe a picture in one sentence",
+    "description": "Child describes what is happening in a picture using one sentence.",
+    "taskType": "Mobile",
+    "avatarTopic": "Communication"
+  },
+  {
+    "title": "Emotional regulation breathing exercise",
+    "description": "Child follows guided breathing exercise for 2 minutes.",
+    "taskType": "Mobile",
+    "avatarTopic": "Emotional Regulation"
+  },
+  {
+    "title": "Memory card game (5 pairs)",
+    "description": "Child matches 5 pairs of memory cards.",
+    "taskType": "Mobile",
+    "avatarTopic": "Memory"
+  },
+  {
+    "title": "Match identical pictures",
+    "description": "Child matches identical picture cards.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Name 5 animals",
+    "description": "Child names five animals shown in pictures.",
+    "taskType": "Mobile",
+    "avatarTopic": "Animals & Vocabulary"
+  },
+  {
+    "title": "Follow 2-step instructions",
+    "description": "Child follows two-step instructions given by Specialist.",
+    "taskType": "RealWorld"
+  }
+]
