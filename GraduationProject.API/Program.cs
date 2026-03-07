@@ -1,8 +1,13 @@
 
+using ECommerce.Domain.Contracts;
+using ECommerce.persistence.Repositories;
 using GraduationProject.API.Extensions;
 using GraduationProject.Domain.Contracts;
 using GraduationProject.Persistence.Data.DataSeed;
 using GraduationProject.Persistence.Data.DbContexts;
+using GraduationProject.Services;
+using GraduationProject.Services.Abstraction;
+using GraduationProject.Services.MappingProfiles;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -27,7 +32,11 @@ namespace GraduationProject.API
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             builder.Services.AddScoped<IDataSeed, DataSeed>();
+            builder.Services.AddAutoMapper(x => x.AddProfile(typeof(TaskProfile)));
+            builder.Services.AddScoped<ITaskService, TaskService>();
             #endregion
 
             var app = builder.Build();

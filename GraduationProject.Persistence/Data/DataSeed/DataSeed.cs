@@ -23,18 +23,23 @@ namespace GraduationProject.Persistence.Data.DataSeed
             _dbContexts = dbContexts;
         }
 
-        public void InitializeData()
+        public async Task InitializeDataAsync()
         {
            try
             {
-                if (_dbContexts.preDefinedTasks.Any()) //lw l table bta3 l tasks msh fadi
+                var hasPredefinedTasks =await _dbContexts.preDefinedTasks.AnyAsync();
+                if (hasPredefinedTasks) //lw l table bta3 l tasks msh fadi
                 {
                     return;
                 }
-                if(!_dbContexts.preDefinedTasks.Any())
-                SeedFromJson<PreDefinedTask, int>("PreDefinedTasks.json", _dbContexts.preDefinedTasks);
+                if(!hasPredefinedTasks)
+                {
+                   await SeedFromJson<PreDefinedTask, int>("PreDefinedTasks.json", _dbContexts.preDefinedTasks);
 
-                _dbContexts.SaveChanges();
+
+                }
+
+                await  _dbContexts.SaveChangesAsync();
 
             }
             catch(Exception ex)
@@ -43,7 +48,7 @@ namespace GraduationProject.Persistence.Data.DataSeed
             }
             
         }
-        private void SeedFromJson<T,Tkey>(string fileName,DbSet<T> dbset) where T: BaseEntity<Tkey>
+        private async Task SeedFromJson<T,Tkey>(string fileName,DbSet<T> dbset) where T: BaseEntity<Tkey>
         {
     var filePath = @"A:\BackendGraduationProject\GraduationProject\GraduationProject.Persistence\Data\DataSeed\JsonFiles\" +fileName;
             if (!File.Exists(filePath))
@@ -55,7 +60,7 @@ namespace GraduationProject.Persistence.Data.DataSeed
                 var dataStream = File.OpenRead(filePath);
 
               
-                var FileData = JsonSerializer.Deserialize<List<T>>(dataStream, new JsonSerializerOptions
+                var FileData =await JsonSerializer.DeserializeAsync<List<T>>(dataStream, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true,
                     Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
@@ -63,8 +68,8 @@ namespace GraduationProject.Persistence.Data.DataSeed
 
                 if (FileData is not null)
                 {
-                    Console.WriteLine($"Found {FileData?.Count ?? 0} items to seed from {filePath}");
-                    dbset.AddRange(FileData);
+                    //Console.WriteLine($"Found {FileData?.Count ?? 0} items to seed from {filePath}");
+                  await  dbset.AddRangeAsync(FileData);
                 
                 }
             }
