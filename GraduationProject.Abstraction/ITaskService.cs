@@ -4,10 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GraduationProject.Domain.Contracts
+namespace GraduationProject.Services.Abstraction
 {
-    public interface IDataSeed
-    {
-        Task InitializeDataAsync();
-    }
+    public interface ITaskService
+    {    }
 }

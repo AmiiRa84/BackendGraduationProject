@@ -1,6 +1,7 @@
 ﻿using ECommerce.Domain.Contracts;
-using ECommerce.Domain.Entities;
-using ECommerce.persistence.Data.DbContexts;
+
+using GraduationProject.Domain.Entities;
+using GraduationProject.Persistence.Data.DbContexts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,20 +12,13 @@ namespace ECommerce.persistence.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly StoreDbContexts _dbContexts;
+        private readonly StoreDbContext _dbContexts;
         private readonly Dictionary<Type, Object> _repositories = [];
-        public UnitOfWork(StoreDbContexts dbContexts)
+        public UnitOfWork(StoreDbContext dbContexts)
         {
             _dbContexts = dbContexts;
         }
-        //mafe4 ay block hy7sal 
-        //3 steps 1)b3ml dictionary fe kol l repositories deh
-        //2 lw tlab repo gowa l dic adeholo lw fe nafs l request
-        //lw talab repository msh fe nafs l dictionarry habda2 a create leh repository dah w a7oto fl ditionary
-        //34an lw talabo tani f nafs l request adeholo
-        //hy3ml check howa l type bta3 l generic repo lli ana 3awzo mn type mo3aian  mawgod fl dictioanry elawel
-        // y4ouf howa l type dah k key mawgod fl dictionar wla la
-        //key => type //// value=> object mn l generic repo
+       
 
         public IGenericRepository<TEntity, TKey> GetRepository<TEntity, TKey>() where TEntity : BaseEntity<TKey>
         {

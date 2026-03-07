@@ -14,7 +14,8 @@ namespace ECommerce.persistence.Repositories
     public class GenericRepository<TEntity, TKey> : IGenericRepository<TEntity, TKey> where TEntity : BaseEntity<TKey>
     {
         private readonly StoreDbContext _dbContexts;
-        //clr fl mvc mkn4 howa lli byedene l generic repo e7na kona 3amlen method gowa l iunit of work btedene l repository 3la 7db mana 3awez
+        //clr fl mvc mkn4 howa lli byedene l generic repo e7na kona
+        //3amlen method gowa l iunit of work btedene l repository 3la 7db mana 3awez
         public GenericRepository(StoreDbContext dbContexts)
         {
             _dbContexts = dbContexts;
