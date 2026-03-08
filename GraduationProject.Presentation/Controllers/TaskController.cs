@@ -33,5 +33,25 @@ namespace GraduationProject.Presentation.Controllers
 
             return Ok(TaskTitleAndStatus);
         }
+
+        [HttpPatch("{taskId}/status")]
+        public async Task<IActionResult> UpdateTaskStatus(int taskId)
+        {
+     
+            try
+            {
+                await _taskService.UpdateTaskStatusAsync(taskId);
+                return Ok("Task status updated to Completed");
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message == "Task not found")
+                    return NotFound(ex.Message);
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+
     }
 }

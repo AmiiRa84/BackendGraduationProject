@@ -48,5 +48,21 @@ namespace GraduationProject.Services
             return result;
         }
 
+        public async Task<bool> UpdateTaskStatusAsync(int taskId)
+        {
+            var task =await _unitOfWork.GetRepository<SpecialistTask, int>()
+                .GetByIdAsync(taskId);
+            if (task == null)
+                throw new Exception("Task not found");
+
+            if (task.TaskStatus == TStatus.Completed)
+                throw new Exception("Task is already completed");
+
+            task.TaskStatus = TStatus.Completed;
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return true;
+        }
     }
 }
