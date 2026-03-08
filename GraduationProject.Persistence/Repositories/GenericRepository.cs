@@ -36,6 +36,15 @@ namespace ECommerce.persistence.Repositories
         public async Task<IEnumerable<TEntity>> GetAllAsync() 
             => await _dbContexts.Set<TEntity>().ToListAsync();
 
+        public async Task<IEnumerable<TEntity>> GetAllAsync(
+        Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null
+    )
+        {
+            IQueryable<TEntity> query = _dbContexts.Set<TEntity>();
+            if (include != null)
+                query = include(query);
+            return await query.ToListAsync();
+        }
 
         //find btdawar lawel fl local lw mal2t4 btro7 3la l db fkeda db hits
         public async Task<TEntity?> GetByIdAsync(TKey id)

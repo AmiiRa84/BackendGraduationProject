@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GraduationProject.Persistence.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20260302182615_01")]
+    [Migration("20260308212650_01")]
     partial class _01
     {
         /// <inheritdoc />
@@ -44,7 +44,7 @@ namespace GraduationProject.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ParentId")
+                    b.Property<int>("ParentId")
                         .HasColumnType("int");
 
                     b.Property<int>("SpecialistId")
@@ -140,15 +140,14 @@ namespace GraduationProject.Persistence.Migrations
                     b.Property<DateTime>("AssignedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ChildId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("ParentId")
-                        .HasColumnType("int");
 
                     b.Property<int?>("PredefinedTaskId")
                         .HasColumnType("int");
@@ -167,12 +166,11 @@ namespace GraduationProject.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentId");
+                    b.HasIndex("ChildId");
 
                     b.HasIndex("PredefinedTaskId");
 
@@ -243,15 +241,19 @@ namespace GraduationProject.Persistence.Migrations
 
             modelBuilder.Entity("GraduationProject.Domain.Data.Entities.ChildModule.Child", b =>
                 {
-                    b.HasOne("GraduationProject.Domain.Entities.ParentModule.Parent", null)
+                    b.HasOne("GraduationProject.Domain.Entities.ParentModule.Parent", "Parent")
                         .WithMany("Children")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("GraduationProject.Domain.Data.Entities.SpecialistModule.Specialist", "Specialist")
                         .WithMany("Childs")
                         .HasForeignKey("SpecialistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Parent");
 
                     b.Navigation("Specialist");
                 });
@@ -277,9 +279,9 @@ namespace GraduationProject.Persistence.Migrations
 
             modelBuilder.Entity("GraduationProject.Domain.Data.Entities.TaskModule.SpecialistTask", b =>
                 {
-                    b.HasOne("GraduationProject.Domain.Entities.ParentModule.Parent", "Parent")
+                    b.HasOne("GraduationProject.Domain.Data.Entities.ChildModule.Child", "Child")
                         .WithMany("Tasks")
-                        .HasForeignKey("ParentId")
+                        .HasForeignKey("ChildId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -293,11 +295,16 @@ namespace GraduationProject.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Parent");
+                    b.Navigation("Child");
 
                     b.Navigation("PreDefinedTask");
 
                     b.Navigation("Specialist");
+                });
+
+            modelBuilder.Entity("GraduationProject.Domain.Data.Entities.ChildModule.Child", b =>
+                {
+                    b.Navigation("Tasks");
                 });
 
             modelBuilder.Entity("GraduationProject.Domain.Data.Entities.SpecialistModule.Specialist", b =>
@@ -314,8 +321,6 @@ namespace GraduationProject.Persistence.Migrations
                     b.Navigation("Children");
 
                     b.Navigation("Reports");
-
-                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

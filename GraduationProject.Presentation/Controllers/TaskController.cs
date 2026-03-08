@@ -11,20 +11,27 @@ namespace GraduationProject.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[Controller]")]
-    public class TaskController:ControllerBase
+    public class TaskController : ControllerBase
     {
-      
+
         private readonly ITaskService _taskService;
 
         public TaskController(ITaskService taskService)
         {
             _taskService = taskService;
         }
-        [HttpGet]
+        [HttpGet("predefined")]
         public async Task<ActionResult<IEnumerable<PredefinedTaskDTO>>> GetAllPredefinedTasks()
         {
-            var predefinedTasks =await _taskService.GetAllPredefinedTasksAsync();
+            var predefinedTasks = await _taskService.GetAllPredefinedTasksAsync();
             return Ok(predefinedTasks);
+        }
+        [HttpGet("title-status/{childId}")]
+        public async Task<ActionResult<IEnumerable<TaskTitleAndStatusDTO>>> GetTaskTitleAndStatus(int childId)
+        {
+            var TaskTitleAndStatus = await _taskService.GetTitleAndStatusAsync(childId);
+
+            return Ok(TaskTitleAndStatus);
         }
     }
 }

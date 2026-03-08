@@ -1,5 +1,7 @@
 ﻿using GraduationProject.Domain.Data.Entities.SpecialistModule;
+using GraduationProject.Domain.Data.Entities.TaskModule;
 using GraduationProject.Domain.Entities;
+using GraduationProject.Domain.Entities.ParentModule;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +18,9 @@ namespace GraduationProject.Domain.Data.Entities.ChildModule
         public string Description { get; set; } = default!;
         public int SpecialistId { get; set; }
         public Specialist Specialist { get; set; } = default!;
+        public int ParentId { get; set; }
+        public Parent Parent { get; set; } = default!;
+
+        public ICollection<SpecialistTask> Tasks { get; set; } = new List<SpecialistTask>();
     }
 }

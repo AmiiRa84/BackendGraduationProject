@@ -18,7 +18,7 @@ namespace GraduationProject.Domain.Entities.ParentModule
         public string Password { get; set; } = default!;
         public ICollection<Child> Children { get; set; } = new List<Child>();
         public ICollection<Report> Reports { get; set; } = new List<Report>();
-        public ICollection<SpecialistTask> Tasks { get; set; } = new List<SpecialistTask>();
+     //   public ICollection<SpecialistTask> Tasks { get; set; } = new List<SpecialistTask>();
 
     }
 }

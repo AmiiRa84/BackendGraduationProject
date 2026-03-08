@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GraduationProject.Domain.Data.Entities.TaskModule;
 using GraduationProject.Domain.Entities.TaskModule;
 using GraduationProject.Shared.DTOs.TaskDTOs;
 using System;
@@ -15,6 +16,13 @@ namespace GraduationProject.Services.MappingProfiles
         {
             CreateMap<PreDefinedTask, PredefinedTaskDTO>()
                 .ForMember(dest => dest.TaskType, opt => opt.MapFrom(src => src.TaskType.ToString()));
+
+            CreateMap<SpecialistTask, TaskTitleAndStatusDTO>()
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dest => dest.TaskStatus, opt => opt.MapFrom(src => src.TaskStatus.ToString()));
+
+
+
         }
     }
 }

@@ -10,6 +10,6 @@ namespace GraduationProject.Services.Abstraction
     public interface ITaskService
     {
         Task<IEnumerable<PredefinedTaskDTO>> GetAllPredefinedTasksAsync();
-
+        Task<IEnumerable<TaskTitleAndStatusDTO>> GetTitleAndStatusAsync(int childId);
     }
 }

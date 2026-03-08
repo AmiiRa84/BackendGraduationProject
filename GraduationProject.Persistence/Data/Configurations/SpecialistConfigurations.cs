@@ -42,7 +42,7 @@ namespace GraduationProject.Persistence.Data.Configurations
 
             builder.Property(u => u.City)
                    .IsRequired()
-                   .HasMaxLength(10);
+                   .HasMaxLength(100);
 
 
             builder.Property(u => u.Street)
@@ -55,12 +55,14 @@ namespace GraduationProject.Persistence.Data.Configurations
 
             builder.HasMany(u => u.Reports)
                 .WithOne(u => u.Specialist)
-                .HasForeignKey(u => u.SpecialistId);
+                .HasForeignKey(u => u.SpecialistId)
+             .OnDelete(DeleteBehavior.NoAction);
 
 
             builder.HasMany(u => u.Tasks)
                    .WithOne(s => s.Specialist)
-                   .HasForeignKey(t => t.SpecialistId); 
+                   .HasForeignKey(t => t.SpecialistId)
+                   .OnDelete(DeleteBehavior.NoAction);
             #endregion
 
 

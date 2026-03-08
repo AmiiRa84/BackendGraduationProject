@@ -25,7 +25,10 @@ namespace GraduationProject.Domain.Data.Entities.SpecialistModule
 
         public ICollection<SpecialistTask> Tasks { get; set; } = default!;
         public ICollection<Report> Reports { get; set; } = new List<Report>();
-        public ICollection<Child> Childs { get; set; } = new List<Child>();
+        //public ICollection<Child> Childs { get; set; } = new List<Child>();
+       // public ICollection<Child> Childs { get; set; } = new HashSet<Child>();
+        public ICollection<Child> Childs { get; set; } = new LinkedList<Child>();
+
     }
 
 

@@ -14,7 +14,7 @@ namespace ECommerce.Domain.Contracts
         Task<IEnumerable<TEntity>> GetAllAsync();
         Task<TEntity?> GetByIdAsync(Tkey id);
 
-
+        Task<IEnumerable<TEntity>> GetAllAsync(Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null);
         Task AddAsync(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);

@@ -73,7 +73,7 @@ namespace GraduationProject.Persistence.Migrations
                     Age = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SpecialistId = table.Column<int>(type: "int", nullable: false),
-                    ParentId = table.Column<int>(type: "int", nullable: true)
+                    ParentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,13 +82,14 @@ namespace GraduationProject.Persistence.Migrations
                         name: "FK_Children_Parent_ParentId",
                         column: x => x.ParentId,
                         principalTable: "Parent",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Children_Specialists_SpecialistId",
                         column: x => x.SpecialistId,
                         principalTable: "Specialists",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -125,24 +126,24 @@ namespace GraduationProject.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AssignedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TaskStatus = table.Column<int>(type: "int", nullable: false),
                     TaskType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Source = table.Column<int>(type: "int", nullable: false),
                     SpecialistId = table.Column<int>(type: "int", nullable: false),
                     PredefinedTaskId = table.Column<int>(type: "int", nullable: true),
-                    ParentId = table.Column<int>(type: "int", nullable: false)
+                    ChildId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tasks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tasks_Parent_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "Parent",
+                        name: "FK_Tasks_Children_ChildId",
+                        column: x => x.ChildId,
+                        principalTable: "Children",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -179,9 +180,9 @@ namespace GraduationProject.Persistence.Migrations
                 column: "SpecialistId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tasks_ParentId",
+                name: "IX_Tasks_ChildId",
                 table: "Tasks",
-                column: "ParentId");
+                column: "ChildId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_PredefinedTaskId",
@@ -198,22 +199,22 @@ namespace GraduationProject.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Children");
-
-            migrationBuilder.DropTable(
                 name: "Reports");
 
             migrationBuilder.DropTable(
                 name: "Tasks");
 
             migrationBuilder.DropTable(
+                name: "Children");
+
+            migrationBuilder.DropTable(
+                name: "preDefinedTasks");
+
+            migrationBuilder.DropTable(
                 name: "Parent");
 
             migrationBuilder.DropTable(
                 name: "Specialists");
-
-            migrationBuilder.DropTable(
-                name: "preDefinedTasks");
         }
     }
 }
