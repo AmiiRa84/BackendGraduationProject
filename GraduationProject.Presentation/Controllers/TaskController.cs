@@ -52,6 +52,32 @@ namespace GraduationProject.Presentation.Controllers
             }
         }
 
+        [HttpGet("child/{childId}/tasks-count")]
+        public async Task<IActionResult> GetChildTasksCount(int childId)
+        {
+            var count = await _taskService.GetCountOfCompletedChildTask(childId);
+
+            return Ok(new { TasksCount = count });
+        }
+        
+        [HttpPost("manual-task")]
+        public async Task<IActionResult> CreateManualTask([FromBody] CreateManualTaskDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var taskDto = await _taskService.CreateManualTaskAsync(dto);
+
+            return Ok(taskDto);
+        }
+
+        [HttpGet("specialists/{specialistId}/tasks/count")]
+        public async Task<IActionResult> GetAllTasksCountBySpecialistId(int specialistId)
+        {
+            var AlltasksCount =await _taskService.GetAllTasksCountBySpecialistIdAsync(specialistId);
+            return Ok(AlltasksCount);
+        }
+
 
     }
 }

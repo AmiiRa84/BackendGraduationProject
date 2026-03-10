@@ -12,5 +12,10 @@ namespace GraduationProject.Services.Abstraction
         Task<IEnumerable<PredefinedTaskDTO>> GetAllPredefinedTasksAsync();
         Task<IEnumerable<TaskTitleAndStatusDTO>> GetTitleAndStatusAsync(int childId);
         Task<bool> UpdateTaskStatusAsync(int taskId);
+        Task<int> GetCountOfCompletedChildTask(int childId);
+        Task<CreateManualTaskDTO> CreateManualTaskAsync(CreateManualTaskDTO dto);
+
+        Task<int> GetAllTasksCountBySpecialistIdAsync(int specialistId);
+
     }
 }
