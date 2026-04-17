@@ -20,7 +20,7 @@ namespace ECommerce.persistence.Repositories
         {
             _dbContexts = dbContexts;
         }
-
+      
         public async Task AddAsync(TEntity entity)
         {
             await _dbContexts.Set<TEntity>().AddAsync(entity);
@@ -39,6 +39,8 @@ namespace ECommerce.persistence.Repositories
         public async Task<IEnumerable<TEntity>> GetAllAsync(
         Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null
     )
+
+
         {
             IQueryable<TEntity> query = _dbContexts.Set<TEntity>();
             if (include != null)

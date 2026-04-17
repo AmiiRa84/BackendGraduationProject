@@ -46,10 +46,10 @@ namespace GraduationProject.Persistence.Data.Configurations
 
 
             
-            builder.HasOne(t => t.Specialist)
-       .WithMany(s => s.Tasks)
-       .HasForeignKey(t => t.SpecialistId)
-       .OnDelete(DeleteBehavior.NoAction);
+       //     builder.HasOne(t => t.Specialist)
+       //.WithMany(s => s.Tasks)
+       //.HasForeignKey(t => t.SpecialistId)
+       //.OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(t => t.Child)
                    .WithMany(c => c.Tasks)
@@ -60,6 +60,7 @@ namespace GraduationProject.Persistence.Data.Configurations
                    .WithMany()
                    .HasForeignKey(t => t.PredefinedTaskId)
                    .OnDelete(DeleteBehavior.NoAction);
+         
             #endregion
         }
     }

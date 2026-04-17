@@ -1,4 +1,5 @@
 ﻿using GraduationProject.Services.Abstraction;
+using GraduationProject.Shared.DTOs.ChildDTOs;
 using GraduationProject.Shared.DTOs.TaskDTOs;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -24,6 +25,8 @@ namespace GraduationProject.Presentation.Controllers
         public async Task<ActionResult<IEnumerable<PredefinedTaskDTO>>> GetAllPredefinedTasks()
         {
             var predefinedTasks = await _taskService.GetAllPredefinedTasksAsync();
+            if (predefinedTasks is null) return NotFound("Predefined Tasks is Not Found");
+            
             return Ok(predefinedTasks);
         }
         [HttpGet("title-status/{childId}")]
@@ -78,6 +81,24 @@ namespace GraduationProject.Presentation.Controllers
             return Ok(AlltasksCount);
         }
 
+        [HttpGet("today")]
+        public async Task<IActionResult> GetTasksDueToday()
+        {
+            var tasks = await _taskService.GetTasksDueTodayAsync();
+            return Ok(tasks);
+        }
+
+
+        [HttpGet("child/{childId}")]
+        public async Task<ActionResult<IEnumerable<ChildTaskDTO>>> GetTasksByChild(int childId)
+        {
+            var tasks = await _taskService.GetTasksByChildIdAsync(childId);
+
+            if (tasks == null || !tasks.Any())
+                return NotFound("No tasks found for this child.");
+
+            return Ok(tasks);
+        }
 
     }
 }

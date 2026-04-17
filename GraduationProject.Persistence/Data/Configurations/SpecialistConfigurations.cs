@@ -59,10 +59,10 @@ namespace GraduationProject.Persistence.Data.Configurations
              .OnDelete(DeleteBehavior.NoAction);
 
 
-            builder.HasMany(u => u.Tasks)
-                   .WithOne(s => s.Specialist)
-                   .HasForeignKey(t => t.SpecialistId)
-                   .OnDelete(DeleteBehavior.NoAction);
+            //builder.HasMany(u => u.Tasks)
+            //       .WithOne(s => s.Specialist)
+            //       .HasForeignKey(t => t.SpecialistId)
+            //       .OnDelete(DeleteBehavior.NoAction);
             #endregion
 
 

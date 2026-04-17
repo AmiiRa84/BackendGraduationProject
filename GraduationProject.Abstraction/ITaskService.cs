@@ -1,4 +1,5 @@
-﻿using GraduationProject.Shared.DTOs.TaskDTOs;
+﻿using GraduationProject.Shared.DTOs.ChildDTOs;
+using GraduationProject.Shared.DTOs.TaskDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,10 @@ namespace GraduationProject.Services.Abstraction
         Task<CreateManualTaskDTO> CreateManualTaskAsync(CreateManualTaskDTO dto);
 
         Task<int> GetAllTasksCountBySpecialistIdAsync(int specialistId);
+        Task<IEnumerable<TasksDueTodayDTO>> GetTasksDueTodayAsync();
+
+        Task<IEnumerable<ChildTaskDTO>> GetTasksByChildIdAsync(int childId);
+
 
     }
 }

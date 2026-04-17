@@ -10,20 +10,15 @@ namespace GraduationProject.Shared.DTOs.TaskDTOs
     public class CreateManualTaskDTO
     {
 
-        [Required(ErrorMessage = "Title is required")]
-        public string Title { get; set; } = default!;
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public string? TaskType { get; set; }
 
-        [Required(ErrorMessage = "Description is required")]
-        public string Description { get; set; } = default!;
+        public int? PredefinedTaskId { get; set; }  // لو اختار predefined
 
-        [Required(ErrorMessage = "Due date is required")]
         [DataType(DataType.Date)]
-        public DateTime DueDate { get; set; }
-
-        public int SpecialistId { get; set; }   // مؤقت لحد JWT
+        [Required] public DateTime DueDate { get; set; }
+        public int SpecialistId { get; set; }
         public int ChildId { get; set; }
-
-        [Required]
-        public string TaskType { get; set; } = default!;
     }
 }

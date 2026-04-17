@@ -152,9 +152,6 @@ namespace GraduationProject.Persistence.Migrations
                     b.Property<int>("Source")
                         .HasColumnType("int");
 
-                    b.Property<int>("SpecialistId")
-                        .HasColumnType("int");
-
                     b.Property<int>("TaskStatus")
                         .HasColumnType("int");
 
@@ -170,8 +167,6 @@ namespace GraduationProject.Persistence.Migrations
                     b.HasIndex("ChildId");
 
                     b.HasIndex("PredefinedTaskId");
-
-                    b.HasIndex("SpecialistId");
 
                     b.ToTable("Tasks");
                 });
@@ -286,17 +281,9 @@ namespace GraduationProject.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("PredefinedTaskId");
 
-                    b.HasOne("GraduationProject.Domain.Data.Entities.SpecialistModule.Specialist", "Specialist")
-                        .WithMany("Tasks")
-                        .HasForeignKey("SpecialistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Child");
 
                     b.Navigation("PreDefinedTask");
-
-                    b.Navigation("Specialist");
                 });
 
             modelBuilder.Entity("GraduationProject.Domain.Data.Entities.ChildModule.Child", b =>
@@ -309,8 +296,6 @@ namespace GraduationProject.Persistence.Migrations
                     b.Navigation("Childs");
 
                     b.Navigation("Reports");
-
-                    b.Navigation("Tasks");
                 });
 
             modelBuilder.Entity("GraduationProject.Domain.Entities.ParentModule.Parent", b =>

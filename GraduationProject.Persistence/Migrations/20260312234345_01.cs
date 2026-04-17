@@ -83,13 +83,13 @@ namespace GraduationProject.Persistence.Migrations
                         column: x => x.ParentId,
                         principalTable: "Parent",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Children_Specialists_SpecialistId",
                         column: x => x.SpecialistId,
                         principalTable: "Specialists",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -133,7 +133,6 @@ namespace GraduationProject.Persistence.Migrations
                     TaskStatus = table.Column<int>(type: "int", nullable: false),
                     TaskType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Source = table.Column<int>(type: "int", nullable: false),
-                    SpecialistId = table.Column<int>(type: "int", nullable: false),
                     PredefinedTaskId = table.Column<int>(type: "int", nullable: true),
                     ChildId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -144,12 +143,6 @@ namespace GraduationProject.Persistence.Migrations
                         name: "FK_Tasks_Children_ChildId",
                         column: x => x.ChildId,
                         principalTable: "Children",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Tasks_Specialists_SpecialistId",
-                        column: x => x.SpecialistId,
-                        principalTable: "Specialists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -188,11 +181,6 @@ namespace GraduationProject.Persistence.Migrations
                 name: "IX_Tasks_PredefinedTaskId",
                 table: "Tasks",
                 column: "PredefinedTaskId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tasks_SpecialistId",
-                table: "Tasks",
-                column: "SpecialistId");
         }
 
         /// <inheritdoc />

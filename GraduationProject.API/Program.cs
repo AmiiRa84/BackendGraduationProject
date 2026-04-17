@@ -9,6 +9,7 @@ using GraduationProject.Services;
 using GraduationProject.Services.Abstraction;
 using GraduationProject.Services.MappingProfiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
 namespace GraduationProject.API
@@ -35,8 +36,22 @@ namespace GraduationProject.API
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddScoped<IDataSeed, DataSeed>();
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
+            
+            #region All Profiles
             builder.Services.AddAutoMapper(x => x.AddProfile(typeof(TaskProfile)));
+            builder.Services.AddAutoMapper(x => x.AddProfile(typeof(SpecialistProfile)));
+            builder.Services.AddAutoMapper(x => x.AddProfile(typeof(ChildProfile)));
+            builder.Services.AddAutoMapper(x => x.AddProfile(typeof(ParentProfile))); 
+            #endregion
+
+
             builder.Services.AddScoped<ITaskService, TaskService>();
+            builder.Services.AddScoped<IChildServices, ChildServices>();
+            builder.Services.AddScoped<ISpecialistServices, SpecialistServices>();
+            builder.Services.AddScoped<IParentService   , ParentService>();
+            builder.Services.AddHttpClient<ISendbirdService, SendBirdService>();
+           
             #endregion
 
             var app = builder.Build();

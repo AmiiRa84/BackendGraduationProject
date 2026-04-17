@@ -6,6 +6,7 @@ using GraduationProject.Domain.Data.Entities.TaskModule;
 using GraduationProject.Domain.Data.Entities.TaskModule.Enums;
 using GraduationProject.Domain.Entities.TaskModule;
 using GraduationProject.Services.Abstraction;
+using GraduationProject.Shared.DTOs.ChildDTOs;
 using GraduationProject.Shared.DTOs.TaskDTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -29,43 +30,63 @@ namespace GraduationProject.Services
         public async Task<CreateManualTaskDTO> CreateManualTaskAsync(CreateManualTaskDTO dto)
         {
           
-            if (dto.DueDate < DateTime.Now)
-                throw new Exception("Due date cannot be before today");
+            var child = await _unitOfWork.GetRepository<Child, int>()
+                .GetByIdAsync(dto.ChildId)
+                ?? throw new Exception("Child not found");
 
-           
-            if (!Enum.TryParse<TaskType>(dto.TaskType, true, out var taskTypeEnum))
-                throw new Exception("Invalid TaskType");
+            if (child.SpecialistId != dto.SpecialistId)
+                throw new Exception("This Specialist cannot assign task to this Child");
 
-            
-            var task = new SpecialistTask
+         
+            SpecialistTask task;
+
+            if (dto.PredefinedTaskId.HasValue)
             {
-                Title = dto.Title,
-                Description = dto.Description,
-                SpecialistId = dto.SpecialistId,
-                ChildId = dto.ChildId,
-                TaskType = taskTypeEnum,
-                AssignedDate = DateTime.Now,
-                DueDate = dto.DueDate,
-                TaskStatus = TStatus.Pending,
-                Source = TaskSource.Custom
-            };
+                var predefined = (await _unitOfWork.GetRepository<PreDefinedTask, int>()
+                    .GetAllAsync(q => q.Where(p => p.Id == dto.PredefinedTaskId.Value)))
+                    .FirstOrDefault()
+                    ?? throw new Exception("Predefined task not found");
 
-          
+                task = new SpecialistTask
+                {
+                    Title = predefined.Title,
+                    Description = predefined.Description,
+                    TaskType = predefined.TaskType,
+                    AssignedDate = DateTime.Now,
+                    DueDate = dto.DueDate,
+                    TaskStatus = TStatus.Pending,
+                    Source = TaskSource.Predefined,
+                    ChildId = child.Id,
+                    PredefinedTaskId = predefined.Id
+                    
+                    
+                };
+            }
+            else
+            {
+                if (!Enum.TryParse<TaskType>(dto.TaskType, true, out var taskTypeEnum))
+                    throw new Exception("Invalid TaskType");
+
+                task = new SpecialistTask
+                {
+                    Title = dto.Title!,
+                    Description = dto.Description!,
+                    TaskType = taskTypeEnum,
+                    AssignedDate = DateTime.Now,
+                    DueDate = dto.DueDate,
+                    TaskStatus = TStatus.Pending,
+                    Source = TaskSource.Custom,
+                    ChildId = child.Id
+                    
+                    
+                };
+            }
+
+         
             await _unitOfWork.GetRepository<SpecialistTask, int>().AddAsync(task);
             await _unitOfWork.SaveChangesAsync();
 
-         
-            var response = new CreateManualTaskDTO
-            {
-                Title = task.Title,
-                Description = task.Description,
-                DueDate = task.DueDate,
-                SpecialistId = task.SpecialistId,
-                ChildId = task.ChildId,
-                TaskType = task.TaskType.ToString()
-            };
-
-            return response;
+            return _mapper.Map<CreateManualTaskDTO>(task);
         }
             
         
@@ -78,13 +99,12 @@ namespace GraduationProject.Services
 
         public async Task<int> GetAllTasksCountBySpecialistIdAsync(int specialistId)
         {
-            var tasks =await _unitOfWork.GetRepository<SpecialistTask,int>()
-                .GetAllAsync(sp=>sp.Where(sp=>sp.SpecialistId==specialistId));
-            var tasksCount = tasks.Count();
+            var tasks = await _unitOfWork.GetRepository<SpecialistTask, int>()
+        .GetAllAsync(query => query.Where(t => t.Child.SpecialistId == specialistId));
 
-            return tasksCount;
+            return tasks.Count();
 
-                }
+        }
       
 
         public async Task<int> GetCountOfCompletedChildTask(int childId)
@@ -96,6 +116,31 @@ namespace GraduationProject.Services
             return tasks.Count(t => t.ChildId == childId &&
                                     t.TaskStatus == TStatus.Completed);
         }
+
+        public async Task<IEnumerable<ChildTaskDTO>> GetTasksByChildIdAsync(int childId)
+        {
+            
+            var tasks =await _unitOfWork.GetRepository<SpecialistTask, int>().GetAllAsync();
+
+          
+            var childTasks = tasks.Where(t => t.ChildId == childId);
+
+            return _mapper.Map<IEnumerable<ChildTaskDTO>>(childTasks);
+
+        }
+
+        public async Task<IEnumerable<TasksDueTodayDTO>> GetTasksDueTodayAsync()
+        {
+            var today = DateTime.Today;
+            var taskDueToday =await _unitOfWork.GetRepository<SpecialistTask, int>()
+                .GetAllAsync(include: q => q.Include(t => t.Child)
+                .Where(t => t.DueDate == today));
+         
+
+           return _mapper.Map<IEnumerable<TasksDueTodayDTO>> (taskDueToday);
+           
+        }
+
         public async Task<IEnumerable<TaskTitleAndStatusDTO>> GetTitleAndStatusAsync(int childId)
         {
             var allTasks = await _unitOfWork.GetRepository<SpecialistTask, int>()
