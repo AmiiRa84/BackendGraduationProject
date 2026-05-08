@@ -40,10 +40,14 @@ namespace GraduationProject.Presentation.Controllers
         [HttpPatch("{taskId}/status")]
         public async Task<IActionResult> UpdateTaskStatus(int taskId)
         {
-     
+
             try
             {
-                await _taskService.UpdateTaskStatusAsync(taskId);
+                var result = await _taskService.UpdateTaskStatusAsync(taskId);
+
+                if (!result)
+                    return BadRequest("You've already completed this task");
+
                 return Ok("Task status updated to Completed");
             }
             catch (Exception ex)
@@ -60,7 +64,7 @@ namespace GraduationProject.Presentation.Controllers
         {
             var count = await _taskService.GetCountOfCompletedChildTask(childId);
 
-            return Ok(new { TasksCount = count });
+            return Ok(new { CompletedTasksCount = count });
         }
         
         [HttpPost("manual-task")]
@@ -78,7 +82,7 @@ namespace GraduationProject.Presentation.Controllers
         public async Task<IActionResult> GetAllTasksCountBySpecialistId(int specialistId)
         {
             var AlltasksCount =await _taskService.GetAllTasksCountBySpecialistIdAsync(specialistId);
-            return Ok(AlltasksCount);
+            return Ok(new {TasksCountOfSpecialist=AlltasksCount });
         }
 
         [HttpGet("today")]
@@ -100,5 +104,16 @@ namespace GraduationProject.Presentation.Controllers
             return Ok(tasks);
         }
 
-    }
+        [HttpGet("child/{childId}/details")]
+        public async Task<IActionResult> GetTasksDetailsMobileApp(int childId)
+        {
+            var result = await _taskService.GetTasksDetailsMobileApp(childId);
+
+            if (result == null || !result.Any())
+                return NotFound("No tasks found for this child");
+
+            return Ok(result);
+        }
+
+        }
 }

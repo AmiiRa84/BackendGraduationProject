@@ -13,7 +13,9 @@ namespace GraduationProject.Services.MappingProfiles
     {
         public ParentProfile()
         {
-            CreateMap<Parent, ParentGetNameDTO>();
+            CreateMap<Parent, ParentGetNameDTO>()
+     .ForMember(dest => dest.name
+     , opt => opt.MapFrom(src => src.User.FullName));
 
         }
     }

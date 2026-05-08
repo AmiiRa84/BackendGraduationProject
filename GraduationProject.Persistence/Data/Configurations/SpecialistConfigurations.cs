@@ -18,34 +18,34 @@ namespace GraduationProject.Persistence.Data.Configurations
             builder.HasKey(u => u.Id);
 
 
-            builder.Property(u => u.Name)
+            builder.Property(u => u.User.FullName)
                    .IsRequired()
                    .HasMaxLength(100);
 
-            builder.Property(u => u.Phone)
+            builder.Property(u => u.User.PhoneNumber)
                    .IsRequired();
 
-            builder.Property(u => u.Email)
+            builder.Property(u => u.User.Email)
                    .IsRequired();
 
 
 
-            builder.Property(u => u.Username)
+            builder.Property(u => u.User.UserName)
                    .IsRequired()
                    .HasMaxLength(50);
 
 
-            builder.Property(u => u.Password)
+            builder.Property(u => u.User.PasswordHash)
                    .IsRequired()
                    .HasMaxLength(200);
 
 
-            builder.Property(u => u.City)
+            builder.Property(u => u.User.Address.City)
                    .IsRequired()
                    .HasMaxLength(100);
 
 
-            builder.Property(u => u.Street)
+            builder.Property(u => u.User.Address.Street)
                    .IsRequired()
                    .HasMaxLength(150); 
             #endregion

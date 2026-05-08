@@ -23,12 +23,34 @@ namespace GraduationProject.Presentation.Controllers
         [HttpGet("track/{childId}")]
         public async Task<IActionResult> TrackChildProgress(int childId)
         {
-            var result = await _childServices.GetChildProgressAsync(childId);
+            try
+            {
+                var result = await _childServices.GetChildProgressAsync(childId);
 
-            if (result == null)
-                return NotFound(new { Message = "Child not found" });
+                if (result == null)
+                    return NotFound("This child is not Found");
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                switch (ex)
+                {
+                    case ArgumentException:
+                        return BadRequest(ex.Message);
+                    case InvalidOperationException:
+                        return BadRequest("Invalid Operations ");
+                    case OutOfMemoryException:
+                        return StatusCode(503, "service is Not Available,Try Again Later");
+                    default:
+                        return StatusCode(500, "Internal Server Error");
+                         
+                }
+
+
+
+
+            }
         }
 
         [HttpGet("SpecialistId/{SpecialistId}")]
@@ -37,7 +59,7 @@ namespace GraduationProject.Presentation.Controllers
             var children = await _childServices.GetChildrenBySpecialistIdAsync(SpecialistId);
 
             if (children == null || !children.Any())
-                return NotFound("No children found for this parent.");
+                return NotFound("No children found for this Specialist.");
 
             return Ok(children);
         }

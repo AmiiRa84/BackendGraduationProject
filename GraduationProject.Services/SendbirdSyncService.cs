@@ -30,12 +30,12 @@ namespace GraduationProject.Services
 
             foreach (var parent in parentsFromDb)
             {
-                await _sendbirdService.CreateUserAsync($"parent_{parent.Id}", parent.Name);
+                await _sendbirdService.CreateUserAsync($"parent_{parent.Id}", parent.User.FullName);
             }
 
             foreach (var specialist in specialistsFromDb)
             {
-                await _sendbirdService.CreateUserAsync($"specialist_{specialist.Id}", specialist.Name);
+                await _sendbirdService.CreateUserAsync($"specialist_{specialist.Id}", specialist.User.FullName);
             }
         }
 

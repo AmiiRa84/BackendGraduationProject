@@ -18,11 +18,11 @@ namespace GraduationProject.Presentation.Controllers
            _specialistServices = specialistServices;
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetSpecialist(int id)
+        public async Task<IActionResult> GetSpecialistById(int id)
         {
             var specialist = await _specialistServices.GetDetailsAsync(id);
             if (specialist == null)
-                return NotFound(new { Message = "Specialist not found" });
+                return NotFound("Specialist is Not Found ");
 
             return Ok(specialist);
         }

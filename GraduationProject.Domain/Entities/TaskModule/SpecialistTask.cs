@@ -21,10 +21,10 @@ namespace GraduationProject.Domain.Data.Entities.TaskModule
         public TStatus TaskStatus { get; set; }
         public TaskType TaskType { get; set; }
         public TaskSource Source { get; set; } //ltask hykon pre-defined wla ai wla custom
-       
+
         //public int SpecialistId { get; set; }
         //public Specialist Specialist { get; set; } = default!;
-
+        public DateTime? CompletedAt { get; set; }
         public int? PredefinedTaskId { get; set; }
         public PreDefinedTask? PreDefinedTask { get; set; }
 

@@ -1,16 +1,18 @@
 
+using ECommerce.API.Extensions;
 using ECommerce.Domain.Contracts;
 using ECommerce.persistence.Repositories;
-using GraduationProject.API.Extensions;
+using GraduationProject.API.CustomMiddlewares;
 using GraduationProject.Domain.Contracts;
+using GraduationProject.Domain.Entities.SecurityModule;
 using GraduationProject.Persistence.Data.DataSeed;
 using GraduationProject.Persistence.Data.DbContexts;
+using GraduationProject.Persistence.IdentityData.DataSeed;
 using GraduationProject.Services;
 using GraduationProject.Services.Abstraction;
 using GraduationProject.Services.MappingProfiles;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
 
 namespace GraduationProject.API
 {
@@ -33,9 +35,14 @@ namespace GraduationProject.API
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<StoreDbContext>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            builder.Services.AddScoped<IDataSeed, DataSeed>();
+          
+
+            builder.Services.AddKeyedScoped<IDataSeed, IdentityDataInitializer>("Identity");
+            builder.Services.AddKeyedScoped<IDataSeed, DataSeed>("Default");
             builder.Services.AddScoped<IDashboardService, DashboardService>();
             
             #region All Profiles
@@ -51,30 +58,34 @@ namespace GraduationProject.API
             builder.Services.AddScoped<ISpecialistServices, SpecialistServices>();
             builder.Services.AddScoped<IParentService   , ParentService>();
             builder.Services.AddHttpClient<ISendbirdService, SendBirdService>();
-           
+
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    policy => policy.AllowAnyOrigin()
+                                    .AllowAnyMethod()
+                                    .AllowAnyHeader());
+            });
+
             #endregion
 
             var app = builder.Build();
+            await app.MigrationDataBaseAsync();
+            await app.SeedIdentityDataAsync();
+            await app.SeedDataAsync();
 
-            await app.MigrationDatabase();
-            await app.SeedData();
-
-            #region Configure Pipeline 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
             app.UseHttpsRedirection();
-
+            app.UseCors("AllowAll");        // ? ?????? ???
             app.UseAuthorization();
-
-
             app.MapControllers();
-
-            #endregion
 
             app.Run();
         }

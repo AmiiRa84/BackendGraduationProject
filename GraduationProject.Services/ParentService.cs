@@ -2,6 +2,7 @@
 using ECommerce.Domain.Contracts;
 using GraduationProject.Domain.Entities.ParentModule;
 using GraduationProject.Services.Abstraction;
+using GraduationProject.Services.Exceptions;
 using GraduationProject.Shared.DTOs.ParentDTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -28,8 +29,9 @@ namespace GraduationProject.Services
                 .GetAllAsync(q => q
                     .Where(p => p.Children.Any(c => c.SpecialistId == specialistId))
                     .Include(p => p.Children)
+                    .Include(p=>p.User)
                 );
-
+            if (!parents.Any()) throw new SpecialistNotFoundException(specialistId);
 
             return _mapper.Map<IEnumerable<ParentGetNameDTO>>(parents);
         }

@@ -27,14 +27,14 @@ namespace GraduationProject.Persistence.Data.DataSeed
         {
            try
             {
-                var hasPredefinedTasks =await _dbContexts.preDefinedTasks.AnyAsync();
+                var hasPredefinedTasks =await _dbContexts.PreDefinedTasks.AnyAsync();
                 if (hasPredefinedTasks) //lw l table bta3 l tasks msh fadi
                 {
                     return;
                 }
                 if(!hasPredefinedTasks)
                 {
-                   await SeedFromJson<PreDefinedTask, int>("PreDefinedTasks.json", _dbContexts.preDefinedTasks);
+                   await SeedFromJson<PreDefinedTask, int>("PreDefinedTasks.json", _dbContexts.PreDefinedTasks);
 
 
                 }

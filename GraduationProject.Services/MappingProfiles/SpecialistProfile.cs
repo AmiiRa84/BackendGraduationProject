@@ -15,9 +15,22 @@ namespace GraduationProject.Services.MappingProfiles
     {
         public SpecialistProfile()
         {
-            CreateMap<Specialist,SpecialistDTO>()
+       //     CreateMap<Specialist, SpecialistDTO>()
+       //.ForMember(dest => dest.Name,
+       //    opt => opt.MapFrom(src => src.User.FullName))
+       //.ForMember(dest => dest.Email,
+       //    opt => opt.MapFrom(src => src.User.Email))
+       //.ForMember(dest => dest.Username,
+       //    opt => opt.MapFrom(src => src.User.UserName))
+       //.ForMember(dest => dest.Phone,
+       //    opt => opt.MapFrom(src => src.User.PhoneNumber))
+       //.ForMember(dest => dest.City,
+       //    opt => opt.MapFrom(src => src.User.Address.City))
+       //.ForMember(dest => dest.Street,
+       //    opt => opt.MapFrom(src => src.User.Address.Street));
+
               
-                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone.ToString()));
+                
             CreateMap<UpdateSpecialistDetailsDTO, Specialist>();
 
             

@@ -6,11 +6,14 @@ using GraduationProject.Domain.Data.Entities.TaskModule;
 using GraduationProject.Domain.Data.Entities.TaskModule.Enums;
 using GraduationProject.Domain.Entities.TaskModule;
 using GraduationProject.Services.Abstraction;
+using GraduationProject.Services.Exceptions;
 using GraduationProject.Shared.DTOs.ChildDTOs;
 using GraduationProject.Shared.DTOs.TaskDTOs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -99,80 +102,127 @@ namespace GraduationProject.Services
 
         public async Task<int> GetAllTasksCountBySpecialistIdAsync(int specialistId)
         {
-            var tasks = await _unitOfWork.GetRepository<SpecialistTask, int>()
-        .GetAllAsync(query => query.Where(t => t.Child.SpecialistId == specialistId));
+            var repo = _unitOfWork.GetRepository<SpecialistTask, int>();
+
+            var tasks = await repo.GetAllAsync(q =>
+                q.Where(t => t.Child.SpecialistId == specialistId));
+            if (!tasks.Any())
+                throw new SpecialistNotFoundException(specialistId);
 
             return tasks.Count();
 
         }
       
-
         public async Task<int> GetCountOfCompletedChildTask(int childId)
         {
-            var tasks = await _unitOfWork
-                .GetRepository<SpecialistTask, int>()
-                .GetAllAsync();
+            var repo = _unitOfWork.GetRepository<SpecialistTask, int>();
 
-            return tasks.Count(t => t.ChildId == childId &&
-                                    t.TaskStatus == TStatus.Completed);
+            var tasks = await repo.GetAllAsync(q =>
+                q.Where(t => t.ChildId == childId && t.TaskStatus == TStatus.Completed));
+
+            return tasks.Count();
         }
 
         public async Task<IEnumerable<ChildTaskDTO>> GetTasksByChildIdAsync(int childId)
         {
-            
-            var tasks =await _unitOfWork.GetRepository<SpecialistTask, int>().GetAllAsync();
 
-          
-            var childTasks = tasks.Where(t => t.ChildId == childId);
+            var repo = _unitOfWork.GetRepository<SpecialistTask, int>();
 
-            return _mapper.Map<IEnumerable<ChildTaskDTO>>(childTasks);
+            var tasks = await repo.GetAllAsync(q =>
+                q.Where(t => t.ChildId == childId));
+            if(!tasks.Any())
+            {
+                throw new ChildNotFoundException(childId);
+            }
+            return _mapper.Map<IEnumerable<ChildTaskDTO>>(tasks);
 
         }
 
         public async Task<IEnumerable<TasksDueTodayDTO>> GetTasksDueTodayAsync()
         {
-            var today = DateTime.Today;
-            var taskDueToday =await _unitOfWork.GetRepository<SpecialistTask, int>()
-                .GetAllAsync(include: q => q.Include(t => t.Child)
-                .Where(t => t.DueDate == today));
-         
+            var today = DateTime.UtcNow.Date;
 
-           return _mapper.Map<IEnumerable<TasksDueTodayDTO>> (taskDueToday);
-           
+            var repo = _unitOfWork.GetRepository<SpecialistTask, int>();
+
+            var tasks = await repo.GetAllAsync(q =>
+                q.Where(t => t.DueDate.Date == today)
+                 .Include(t => t.Child));
+
+            return _mapper.Map<IEnumerable<TasksDueTodayDTO>>(tasks);
+
         }
 
         public async Task<IEnumerable<TaskTitleAndStatusDTO>> GetTitleAndStatusAsync(int childId)
         {
-            var allTasks = await _unitOfWork.GetRepository<SpecialistTask, int>()
-                .GetAllAsync(include: q => q.Include(t => t.PreDefinedTask));
+            var repo = _unitOfWork.GetRepository<SpecialistTask, int>();
 
-            var result = allTasks.Select(task => new TaskTitleAndStatusDTO
+            var tasks = await repo.GetAllAsync(q =>
+                q.Where(t => t.ChildId == childId)
+                 .Include(t => t.PreDefinedTask));
+            if (!tasks.Any())
+                throw new ChildNotFoundException(childId);
+
+            return tasks.Select(task => new TaskTitleAndStatusDTO
             {
                 Id = task.Id,
                 Title = !string.IsNullOrEmpty(task.Title)
-                            ? task.Title
-                            : task.PreDefinedTask?.Title ?? "No Title",
+                    ? task.Title
+                    : task.PreDefinedTask?.Title ?? "No Title",
+
                 TaskStatus = task.TaskStatus.ToString()
             });
-
-            return result;
         }
-
         public async Task<bool> UpdateTaskStatusAsync(int taskId)
         {
-            var task =await _unitOfWork.GetRepository<SpecialistTask, int>()
-                .GetByIdAsync(taskId);
+            var task = await _unitOfWork
+            .GetRepository<SpecialistTask, int>()
+            .GetByIdAsync(taskId);
+
             if (task == null)
-                throw new Exception("Task not found");
+                throw new TaskNotFoundException(taskId);
 
             if (task.TaskStatus == TStatus.Completed)
-                throw new Exception("Task is already completed");
+                return false;
 
             task.TaskStatus = TStatus.Completed;
+            task.CompletedAt = DateTime.UtcNow;
 
+            _unitOfWork.GetRepository<SpecialistTask, int>().Update(task);
             await _unitOfWork.SaveChangesAsync();
 
             return true;
+
+        }
+        public async Task<List<TaskDetailsDTO>> GetTasksDetailsMobileApp(int childId)
+        {
+            var repo = _unitOfWork.GetRepository<SpecialistTask, int>();
+
+            var tasks = await repo.GetAllAsync(q =>
+                q.Where(t => t.ChildId == childId));
+
+            if (!tasks.Any()) throw new ChildNotFoundException(childId);
+            return tasks.Select(t => new TaskDetailsDTO
+            {
+                TaskId = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                AssignedDate = t.AssignedDate,
+                DueDate = t.DueDate,
+                CompletedAt = t.CompletedAt,
+
+                PlannedDays = (t.DueDate - t.AssignedDate).TotalDays,
+
+                ActualDays = t.CompletedAt.HasValue
+                    ? (t.CompletedAt.Value - t.AssignedDate).TotalDays
+                    : null,
+
+               Status=  t.TaskStatus == TStatus.Completed?"Completed":"Pending",
+
+                PunctualityStatus =
+                    t.CompletedAt.HasValue && t.CompletedAt.Value <= t.DueDate
+                        ? "On Time"
+                        : "Late"
+            }).ToList();
         }
     }
 }

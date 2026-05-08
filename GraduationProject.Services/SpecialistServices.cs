@@ -4,6 +4,7 @@ using GraduationProject.Domain.Data.Entities.ChildModule;
 using GraduationProject.Domain.Data.Entities.SpecialistModule;
 using GraduationProject.Domain.Entities.ParentModule;
 using GraduationProject.Services.Abstraction;
+using GraduationProject.Services.Exceptions;
 using GraduationProject.Shared.DTOs.ParentDTOs;
 using GraduationProject.Shared.DTOs.SpecialistDTOs;
 using Microsoft.EntityFrameworkCore;
@@ -28,10 +29,28 @@ namespace GraduationProject.Services
         }
         public async Task<SpecialistDTO> GetDetailsAsync(int id)
         {
-            var specialistDetails =await _unitOfWork.GetRepository<Specialist,int>().GetByIdAsync(id);
-           return _mapper.Map<SpecialistDTO>(specialistDetails);
+            var specialist = await _unitOfWork
+     .GetRepository<Specialist, int>()
+     .GetAllAsync(q => q
+         .Where(s => s.Id == id)
+         .Include(s => s.User)
+         .ThenInclude(u => u.Address));
 
 
+            var result = specialist.FirstOrDefault();
+
+            if (specialist is null)
+        throw new SpecialistNotFoundException(id);
+            return new SpecialistDTO
+            {
+                Id = result.Id,
+                Name = result.User.FullName,
+                Email = result.User.Email,
+                Username = result.User.UserName,
+                Phone = result.User.PhoneNumber,
+                City = result.User.Address.City,
+                Street = result.User.Address.Street
+            };
         }
 
    
@@ -44,11 +63,10 @@ namespace GraduationProject.Services
 
             _mapper.Map(dto,specialist);
 
-            if (!int.TryParse(dto.Phone, out int phoneInt))
-                throw new Exception("Phone number invalid");
 
-            specialist.Phone = phoneInt;
-            specialist.Phone = int.Parse(dto.Phone);
+
+            specialist.User.PhoneNumber = dto.Phone;
+           
             _unitOfWork.GetRepository<Specialist, int>().Update(specialist);
             await _unitOfWork.SaveChangesAsync(); 
             return true;

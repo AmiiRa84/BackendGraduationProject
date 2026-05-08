@@ -1,6 +1,7 @@
 ﻿using GraduationProject.Domain.Data.Entities.ChildModule;
 using GraduationProject.Domain.Data.Entities.ReportModule;
 using GraduationProject.Domain.Data.Entities.TaskModule;
+using GraduationProject.Domain.Entities.SecurityModule;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,9 @@ namespace GraduationProject.Domain.Entities.ParentModule
 {
     public class Parent :BaseEntity<int>
     {
-        public string Name { get; set; } = default!;
-        public int Phone { get; set; } = default!;
-        public string Email { get; set; } = default!;
-        public string Username { get; set; } = default!;
-        public string Password { get; set; } = default!;
+   
+        public ApplicationUser User { get; set; } = default!;
+        public string? UserId { get; set; }
         public ICollection<Child> Children { get; set; } = new List<Child>();
         public ICollection<Report> Reports { get; set; } = new List<Report>();
      //   public ICollection<SpecialistTask> Tasks { get; set; } = new List<SpecialistTask>();

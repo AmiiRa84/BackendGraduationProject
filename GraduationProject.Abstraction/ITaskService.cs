@@ -20,6 +20,7 @@ namespace GraduationProject.Services.Abstraction
         Task<IEnumerable<TasksDueTodayDTO>> GetTasksDueTodayAsync();
 
         Task<IEnumerable<ChildTaskDTO>> GetTasksByChildIdAsync(int childId);
+        Task<List<TaskDetailsDTO>> GetTasksDetailsMobileApp(int childId);
 
 
     }

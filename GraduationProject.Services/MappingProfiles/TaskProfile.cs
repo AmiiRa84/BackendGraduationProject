@@ -39,6 +39,7 @@ namespace GraduationProject.Services.MappingProfiles
                 .ForMember(dest => dest.TaskStatus, opt => opt.MapFrom(src => src.TaskStatus.ToString()))
                 .ForMember(dest => dest.Source, opt => opt.MapFrom(src => src.Source.ToString()))
                 .ForMember(dest => dest.ChildName, opt => opt.MapFrom(src => src.Child.Name)); // لو عندك Child
+        
         }
     }
 }
