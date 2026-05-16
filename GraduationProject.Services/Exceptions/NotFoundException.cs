@@ -15,4 +15,5 @@ namespace GraduationProject.Services.Exceptions
     public sealed class TaskNotFoundException(int id):NotFoundException($"Task with Id :{id} is Not Found");
     public sealed class SpecialistNotFoundException(int id):NotFoundException($"Specialist with Id :{id} is Not Found");
     public sealed class ParentNotFoundException(int id): NotFoundException($"Parent with Id :{id} is Not Found");
+    public sealed class ParentNotFoundExceptionAuth (): NotFoundException($"This Parent is Not Found");
 }

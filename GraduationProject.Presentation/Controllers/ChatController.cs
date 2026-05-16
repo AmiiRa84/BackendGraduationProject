@@ -1,54 +1,72 @@
 ﻿using GraduationProject.Services.Abstraction;
-using GraduationProject.Shared.DTOs.ChatDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
-namespace GraduationProject.Presentation.Controllers
+namespace GraduationProject.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class ChatController : ControllerBase
     {
         private readonly ISendbirdService _sendbirdService;
-        private readonly ISendbirdSyncService _syncService; // 👈 هنا
+        private readonly ISendbirdSyncService _sendbirdSyncService;
+        private readonly ILogger<ChatController> _logger;
 
-        public ChatController(ISendbirdService sendbirdService, ISendbirdSyncService syncService)
+        public ChatController(
+            ISendbirdService sendbirdService,
+            ISendbirdSyncService sendbirdSyncService,
+            ILogger<ChatController> logger)
         {
             _sendbirdService = sendbirdService;
-            _syncService = syncService;
+            _sendbirdSyncService = sendbirdSyncService;
+            _logger = logger;
         }
 
-        [HttpPost("create-user")]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO dto)
+        // POST api/Chat/create-chat?parentId=13&specialistId=29
+        [HttpPost("create-chat")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateChat(
+            [FromQuery] int parentId,
+            [FromQuery] int specialistId)
         {
-            var result = await _sendbirdService.CreateUserAsync(dto.UserId, dto.Nickname);
-            return Ok(result);
+            if (parentId <= 0 || specialistId <= 0)
+                return BadRequest(new { success = false, message = "Valid parentId and specialistId are required." });
+            try
+            {
+                var channelUrl = await _sendbirdService
+                    .CreateChatBetweenParentAndSpecialistAsync(parentId, specialistId);
+
+                return Ok(new
+                {
+                    success = true,
+                    channelUrl = channelUrl
+                });
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex,
+                    "Failed to create chat between parent_{PId} & specialist_{SId}",
+                    parentId, specialistId);
+                return StatusCode(502, new { success = false, message = ex.Message });
+            }
         }
 
-        [HttpPost("create-channel")]
-        public async Task<IActionResult> CreateChannel([FromBody] CreateChannelDTO dto)
-        {
-            var result = await _sendbirdService.CreateChannelAsync(dto.ChannelName, dto.UserIds);
-            return Ok(result);
-        }
-
-        [HttpPost("send-message")]
-        public async Task<IActionResult> SendMessage([FromBody] SendMessageDTO dto)
-        {
-            var result = await _sendbirdService.SendMessageAsync(dto.ChannelUrl, dto.Message, dto.UserId);
-            return Ok(result);
-        }
-
+        // POST api/Chat/sync-users
         [HttpPost("sync-users")]
-        public async Task<IActionResult> SyncUsers()
+        [AllowAnonymous]
+        public async Task<IActionResult> SyncAllUsers()
         {
-            await _syncService.SyncAllUsersAsync(); // 👈 هنا
-            return Ok("Users synced to Sendbird successfully!");
+            try
+            {
+                await _sendbirdSyncService.SyncAllUsersAsync();
+                return Ok(new { success = true, message = "All users synced successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Sendbird sync failed.");
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
         }
-
     }
 }

@@ -8,9 +8,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GraduationProject.Abstraction\GraduationProject.Services.Abstraction.csproj" />
+    <ProjectReference Include="..\GraduationProject.Services\GraduationProject.Services.csproj" />
   </ItemGroup>
 	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App"/>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 
 
 	</ItemGroup>

@@ -1,4 +1,3 @@
-
 using ECommerce.API.Extensions;
 using ECommerce.Domain.Contracts;
 using ECommerce.persistence.Repositories;
@@ -22,43 +21,44 @@ namespace GraduationProject.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             #region Register with Dependency Injection Container
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            builder.Services.AddControllers()
+                .AddApplicationPart(typeof(GraduationProject.Presentation.Controllers.AuthController).Assembly);
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
 
             builder.Services.AddDbContext<StoreDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<StoreDbContext>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-          
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<StoreDbContext>();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddKeyedScoped<IDataSeed, IdentityDataInitializer>("Identity");
             builder.Services.AddKeyedScoped<IDataSeed, DataSeed>("Default");
+
             builder.Services.AddScoped<IDashboardService, DashboardService>();
-            
+
             #region All Profiles
             builder.Services.AddAutoMapper(x => x.AddProfile(typeof(TaskProfile)));
             builder.Services.AddAutoMapper(x => x.AddProfile(typeof(SpecialistProfile)));
             builder.Services.AddAutoMapper(x => x.AddProfile(typeof(ChildProfile)));
-            builder.Services.AddAutoMapper(x => x.AddProfile(typeof(ParentProfile))); 
+            builder.Services.AddAutoMapper(x => x.AddProfile(typeof(ParentProfile)));
             #endregion
-
 
             builder.Services.AddScoped<ITaskService, TaskService>();
             builder.Services.AddScoped<IChildServices, ChildServices>();
             builder.Services.AddScoped<ISpecialistServices, SpecialistServices>();
-            builder.Services.AddScoped<IParentService   , ParentService>();
-            builder.Services.AddHttpClient<ISendbirdService, SendBirdService>();
+            builder.Services.AddScoped<IParentService, ParentService>();
+            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
+            builder.Services.AddHttpClient<ISendbirdService, SendBirdService>();
+            builder.Services.AddScoped<ISendbirdSyncService, SendbirdSyncService>();
 
             builder.Services.AddCors(options =>
             {
@@ -71,6 +71,7 @@ namespace GraduationProject.API
             #endregion
 
             var app = builder.Build();
+
             await app.MigrationDataBaseAsync();
             await app.SeedIdentityDataAsync();
             await app.SeedDataAsync();
@@ -83,10 +84,9 @@ namespace GraduationProject.API
 
             app.UseMiddleware<ExceptionHandlerMiddleware>();
             app.UseHttpsRedirection();
-            app.UseCors("AllowAll");        // ? ?????? ???
+            app.UseCors("AllowAll");
             app.UseAuthorization();
             app.MapControllers();
-
             app.Run();
         }
     }

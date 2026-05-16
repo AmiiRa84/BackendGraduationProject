@@ -9,8 +9,9 @@ namespace GraduationProject.Services.Abstraction
     public interface ISendbirdService
     {
         Task<string> CreateUserAsync(string userId, string nickname);
-        Task<string> CreateChannelAsync(string channelName, List<string> userIds);
-        Task<string> SendMessageAsync(string channelUrl, string message, string userId);
+
+   
+        Task<string> CreateChatBetweenParentAndSpecialistAsync(int parentId, int specialistId);
     }
 }
    
