@@ -1,4 +1,6 @@
-﻿using GraduationProject.Services.Abstraction;
+﻿using GraduationProject.Services;
+using GraduationProject.Services.Abstraction;
+using GraduationProject.Services.Exceptions;
 using GraduationProject.Shared.DTOs.ChildDTOs;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -26,30 +28,11 @@ namespace GraduationProject.Presentation.Controllers
             try
             {
                 var result = await _childServices.GetChildProgressAsync(childId);
-
-                if (result == null)
-                    return NotFound("This child is not Found");
-
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (ChildNotFoundException ex)
             {
-                switch (ex)
-                {
-                    case ArgumentException:
-                        return BadRequest(ex.Message);
-                    case InvalidOperationException:
-                        return BadRequest("Invalid Operations ");
-                    case OutOfMemoryException:
-                        return StatusCode(503, "service is Not Available,Try Again Later");
-                    default:
-                        return StatusCode(500, "Internal Server Error");
-                         
-                }
-
-
-
-
+                return NotFound(new { message = ex.Message });
             }
         }
 

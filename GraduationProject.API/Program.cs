@@ -67,7 +67,10 @@ namespace GraduationProject.API
                                     .AllowAnyMethod()
                                     .AllowAnyHeader());
             });
-
+            builder.Services.AddHttpsRedirection(options =>
+            {
+                options.HttpsPort = 7115;
+            });
             #endregion
 
             var app = builder.Build();

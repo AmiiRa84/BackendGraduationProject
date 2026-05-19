@@ -30,23 +30,31 @@ namespace GraduationProject.Services
 
         public async Task<ChildProgressDTO> GetChildProgressAsync(int childId)
         {
-            var repo = _unitOfWork.GetRepository<Child, int>();
+            var child = await _unitOfWork.GetRepository<Child, int>()
+        .GetAllAsync(query => query
+            .Where(c => c.Id == childId)
+            .Include(c => c.Parent)
+                .ThenInclude(p => p.User)     
+            .Include(c => c.Specialist)
+                .ThenInclude(s => s.User)
+  );
 
-            var child = await repo
-      .GetAllAsync(q =>
-          q.Include(c => c.Parent)
-              .ThenInclude(p => p.User))
-      .ContinueWith(t => t.Result.FirstOrDefault(c => c.Id == childId));
+            var result = child.FirstOrDefault(c => c.Id == childId);
 
-            if (child is null)
+            if (result is null)
                 throw new ChildNotFoundException(childId);
 
             return new ChildProgressDTO
             {
-                Name = child.Name,
-                Age = child.Age,
-                ParentName = child.Parent?.User?.FullName,
-                Description = child.Description
+
+                SpecialistName=result.Specialist?.User.FullName,
+                SpecialistEmail=result.Specialist?.User.Email,
+                ParentName = result.Parent?.User?.FullName,
+                ParentPhone = result.Parent?.User?.PhoneNumber,
+                ParentEmail = result.Parent?.User?.Email,
+                ChildName = result.Name,
+                Age = result.Age,
+                Description = result.Description
             };
         }
 

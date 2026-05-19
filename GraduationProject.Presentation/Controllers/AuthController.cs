@@ -119,19 +119,17 @@ namespace GraduationProject.Presentation.Controllers
                 return BadRequest(new { Success = false, msg = ex.Message });
             }
         }
-        [HttpPost("verify-child-mode-password/{parentId:int}")]
+        [HttpPost("{userId}/verify-child-password")]
         [AllowAnonymous]
         public async Task<IActionResult> VerifyChildModePassword(
-            int parentId,
-            [FromBody] VerifyChildModePasswordDTO dto)
+    int userId,
+    [FromBody] VerifyChildModePasswordDTO dto)
         {
             try
             {
-                var result = await _authService.VerifyChildModePasswordAsync(parentId, dto);
-
+                var result = await _authService.VerifyChildModePasswordAsync(userId, dto);
                 if (!result.Success)
                     return Unauthorized(result);
-
                 return Ok(result);
             }
             catch (ParentNotFoundExceptionAuth ex)

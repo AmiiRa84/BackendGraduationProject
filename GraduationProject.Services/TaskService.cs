@@ -195,33 +195,53 @@ namespace GraduationProject.Services
         }
         public async Task<List<TaskDetailsDTO>> GetTasksDetailsMobileApp(int childId)
         {
+            
+            var childRepo = _unitOfWork.GetRepository<Child, int>();
+            var child = await childRepo.GetByIdAsync(childId);
+            if (child is null) throw new ChildNotFoundException(childId);
+         
             var repo = _unitOfWork.GetRepository<SpecialistTask, int>();
-
             var tasks = await repo.GetAllAsync(q =>
-                q.Where(t => t.ChildId == childId));
+                q.Where(t => t.ChildId == childId)
+                 .Include(t => t.PreDefinedTask));
 
-            if (!tasks.Any()) throw new ChildNotFoundException(childId);
+            
+            if (!tasks.Any())
+                return new List<TaskDetailsDTO>
+        {
+            new TaskDetailsDTO
+            {
+                Message = "No assigned tasks yet."
+            }
+        };
+
+         
             return tasks.Select(t => new TaskDetailsDTO
             {
                 TaskId = t.Id,
-                Title = t.Title,
-                Description = t.Description,
+                Title = !string.IsNullOrWhiteSpace(t.Title)
+                    ? t.Title
+                    : t.PreDefinedTask?.Title ?? "Untitled Task",
+                Description = !string.IsNullOrWhiteSpace(t.Description)
+                    ? t.Description
+                    : t.PreDefinedTask?.Description ?? "No Description",
                 AssignedDate = t.AssignedDate,
                 DueDate = t.DueDate,
                 CompletedAt = t.CompletedAt,
-
                 PlannedDays = (t.DueDate - t.AssignedDate).TotalDays,
-
                 ActualDays = t.CompletedAt.HasValue
                     ? (t.CompletedAt.Value - t.AssignedDate).TotalDays
                     : null,
-
-               Status=  t.TaskStatus == TStatus.Completed?"Completed":"Pending",
-
-                PunctualityStatus =
-                    t.CompletedAt.HasValue && t.CompletedAt.Value <= t.DueDate
+                Status = t.TaskStatus == TStatus.Completed
+                    ? "Completed"
+                    : "Pending",
+                PunctualityStatus = !t.CompletedAt.HasValue
+                    ? (DateTime.UtcNow <= t.DueDate
+                        ? "Pending On Time"
+                        : "Overdue")
+                    : (t.CompletedAt.Value <= t.DueDate
                         ? "On Time"
-                        : "Late"
+                        : "Late")
             }).ToList();
         }
     }

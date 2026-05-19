@@ -52,13 +52,13 @@ namespace GraduationProject.Services
                 }
                 catch (Exception ex)
                 {
-                    // نفس الـ warning pattern في AuthenticationService
+                  
                     _logger.LogWarning(ex,
                         "SendBird failed for parent_{Id}", parent.Id);
                 }
             }
 
-            // ── Sync الـ Specialists ────────────────────────────────────
+           
             foreach (var specialist in specialists)
             {
                 try
@@ -69,7 +69,7 @@ namespace GraduationProject.Services
                 }
                 catch (Exception ex)
                 {
-                    // نفس الـ warning pattern في AuthenticationService
+                
                     _logger.LogWarning(ex,
                         "SendBird failed for specialist_{Id}", specialist.Id);
                 }

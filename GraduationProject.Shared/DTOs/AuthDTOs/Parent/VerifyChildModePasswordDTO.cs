@@ -9,6 +9,6 @@ namespace GraduationProject.Shared.DTOs.AuthDTOs.Parent
     public class VerifyChildModePasswordDTO
     {
         public string Password { get; set; } = default!;
-        public string UsserId { get; set; } = default!;
+      
     }
 }

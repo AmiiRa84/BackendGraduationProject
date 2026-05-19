@@ -27,7 +27,7 @@ namespace GraduationProject.Services
         public SendBirdService(HttpClient httpClient, IConfiguration config)
         {
             _httpClient = httpClient;
-
+          
             _appId = config["Sendbird:AppId"]
                 ?? throw new ArgumentNullException("Sendbird:AppId is missing");
 
@@ -37,7 +37,10 @@ namespace GraduationProject.Services
             _baseUrl = $"https://api-{_appId}.sendbird.com/v3";
 
             _httpClient.DefaultRequestHeaders.Clear();
+           
+
             _httpClient.DefaultRequestHeaders.Add("Api-Token", apiToken);
+            _httpClient.DefaultRequestHeaders.ExpectContinue = false;
         }
 
    
@@ -56,9 +59,9 @@ namespace GraduationProject.Services
             {
                 var errorBody = await response.Content.ReadAsStringAsync();
 
-                // المستخدم موجود مسبقاً → مش error حقيقي
-                if (errorBody.Contains("already") || errorBody.Contains("exist"))
+                if (errorBody.Contains("400202") || errorBody.Contains("unique constraint"))
                     return errorBody;
+               
 
                 throw new HttpRequestException(
                     $"SendBird CreateUser failed: {errorBody}",
