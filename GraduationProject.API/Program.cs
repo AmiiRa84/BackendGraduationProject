@@ -71,6 +71,14 @@ namespace GraduationProject.API
             {
                 options.HttpsPort = 7115;
             });
+           
+            builder.Services.AddHttpClient<IAIReportService, AIReportService>(client =>
+            {
+                client.DefaultRequestHeaders.ExpectContinue = false;
+            });
+
+            // ? EmailService
+            builder.Services.AddScoped<IEmailService, EmailService>();
             #endregion
 
             var app = builder.Build();

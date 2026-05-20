@@ -1,4 +1,5 @@
-﻿using GraduationProject.Domain.Data.Entities.SpecialistModule;
+﻿using GraduationProject.Domain.Data.Entities.ChildModule;
+using GraduationProject.Domain.Data.Entities.SpecialistModule;
 using GraduationProject.Domain.Entities;
 using GraduationProject.Domain.Entities.ParentModule;
 using System;
@@ -11,9 +12,11 @@ namespace GraduationProject.Domain.Data.Entities.ReportModule
 {
     public class Report:BaseEntity<int>
     {
-       
         public DateTime AssignedDate { get; set; }
-        public string Recommendation { get; set; } = default!;
+        public string Content { get; set; } = default!;
+
+        public int ChildId { get; set; }
+        public Child Child { get; set; } = default!;
 
         //34an a3raf men l specialist lli 3ml report dah => nav prop
         public int SpecialistId { get; set; }

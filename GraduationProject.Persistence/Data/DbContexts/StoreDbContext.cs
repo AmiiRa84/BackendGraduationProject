@@ -30,6 +30,7 @@ namespace GraduationProject.Persistence.Data.DbContexts
         public DbSet<Child> Children { get; set; }
         public DbSet<SpecialistTask> Tasks { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<TaskResult> TaskResults { get; set; } = default!;
         public DbSet<PreDefinedTask> PreDefinedTasks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -55,13 +56,24 @@ namespace GraduationProject.Persistence.Data.DbContexts
                 .IsRequired()                
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Parent - ApplicationUser
+         
             builder.Entity<Parent>()
                 .HasOne(p => p.User)           
                 .WithOne(u => u.Parent)      
                 .HasForeignKey<Parent>(p => p.UserId)
                 .IsRequired()                
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Report>()
+    .HasOne(r => r.Child)
+    .WithMany(c => c.Reports)
+    .HasForeignKey(r => r.ChildId)
+    .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Report>()
+    .HasOne(r => r.Parent)
+    .WithMany()
+    .HasForeignKey(r => r.ParentId)
+    .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

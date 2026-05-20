@@ -1,4 +1,5 @@
-﻿using GraduationProject.Domain.Data.Entities.SpecialistModule;
+﻿using GraduationProject.Domain.Data.Entities.ReportModule;
+using GraduationProject.Domain.Data.Entities.SpecialistModule;
 using GraduationProject.Domain.Data.Entities.TaskModule;
 using GraduationProject.Domain.Entities;
 using GraduationProject.Domain.Entities.ParentModule;
@@ -20,7 +21,7 @@ namespace GraduationProject.Domain.Data.Entities.ChildModule
         public Specialist Specialist { get; set; } = default!;
         public int ParentId { get; set; }
         public Parent Parent { get; set; } = default!;
-
+        public ICollection<Report> Reports { get; set; } = new List<Report>();
         public ICollection<SpecialistTask> Tasks { get; set; } = new List<SpecialistTask>();
     }
 }
