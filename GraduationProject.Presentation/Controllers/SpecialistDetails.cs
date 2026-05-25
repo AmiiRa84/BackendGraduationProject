@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace GraduationProject.Presentation.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class SpecialistDetails :ControllerBase
     {
         private readonly ISpecialistServices _specialistServices;

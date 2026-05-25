@@ -22,7 +22,8 @@ namespace GraduationProject.Services
 
         public async Task SendEmailAsync(string to, string subject, string body)
         {
-        
+
+            var toMe = "amiraasaad90@gmail.com";
             var email = _config["EmailSettings:Email"];
             var password = _config["EmailSettings:Password"];
 
@@ -40,7 +41,7 @@ namespace GraduationProject.Services
                 IsBodyHtml = false
             };
 
-            message.To.Add(to);
+            message.To.Add(toMe);
 
             await smtp.SendMailAsync(message);
         }

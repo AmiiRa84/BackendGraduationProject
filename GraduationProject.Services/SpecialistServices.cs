@@ -39,8 +39,8 @@ namespace GraduationProject.Services
 
             var result = specialist.FirstOrDefault();
 
-            if (specialist is null)
-        throw new SpecialistNotFoundException(id);
+            if (result is null) 
+                throw new SpecialistNotFoundException(id);
             return new SpecialistDTO
             {
                 Id = result.Id,

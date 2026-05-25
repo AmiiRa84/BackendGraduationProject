@@ -22,7 +22,7 @@ namespace GraduationProject.Services
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _config;
         private readonly IUnitOfWork _unitOfWork;
-
+        
         public AIReportService(HttpClient httpClient, IConfiguration config, IUnitOfWork unitOfWork)
         {
             _httpClient = httpClient;
@@ -49,7 +49,7 @@ namespace GraduationProject.Services
         public async Task<FinalReportResponseDto> GenerateStructuredReportAsync(int childId)
         {
             var children = await _unitOfWork.GetRepository<Child, int>()
-    .GetAllAsync(q => q.Where(c => c.Id == childId).Include(c => c.Tasks)); // ✅
+    .GetAllAsync(q => q.Where(c => c.Id == childId).Include(c => c.Tasks)); 
             var child = children.FirstOrDefault();
 
             if (child == null) return null!;
