@@ -37,13 +37,13 @@ namespace GraduationProject.Presentation.Controllers
             return Ok(TaskTitleAndStatus);
         }
 
-        [HttpPatch("{taskId}/status")]
-        public async Task<IActionResult> UpdateTaskStatus(int taskId)
+        [HttpPatch("{taskId}/CompleteTaskWithParentNote")]
+        public async Task<IActionResult> CompleteTaskWithNote(int taskId,string motherNote)
         {
 
             try
             {
-                var result = await _taskService.UpdateTaskStatusAsync(taskId);
+                var result = await _taskService.CompleteTaskWithNoteAsync(taskId,motherNote);
 
                 if (!result)
                     return BadRequest("You've already completed this task");

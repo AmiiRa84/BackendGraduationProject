@@ -1,6 +1,8 @@
 ﻿using ECommerce.Domain.Contracts;
 using GraduationProject.Domain.Data.Entities.ChildModule;
 using GraduationProject.Domain.Data.Entities.ReportModule;
+using GraduationProject.Domain.Data.Entities.TaskModule;
+using GraduationProject.Domain.Data.Entities.TaskModule.Enums;
 using GraduationProject.Domain.Entities.TaskModule;
 using GraduationProject.Services.Abstraction;
 using GraduationProject.Shared.DTOs.ReportDTOs;
@@ -32,18 +34,31 @@ namespace GraduationProject.Services
 
         public async Task SaveTaskResultAsync(SaveTaskResultDto request)
         {
+           
             var result = new TaskResult
             {
                 SpecialistTaskId = request.SpecialistTaskId,
                 TotalMoves = request.TotalMoves,
                 TimeTaken = request.TimeTaken,
                 RoundsCount = request.RoundsCount,
-                MotherNote = request.MotherNote,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.UtcNow
             };
-
             await _unitOfWork.GetRepository<TaskResult, int>().AddAsync(result);
-            await _unitOfWork.SaveChangesAsync();
+
+           
+            var task = await _unitOfWork
+                .GetRepository<SpecialistTask, int>()
+                .GetByIdAsync(request.SpecialistTaskId);
+
+            if (task != null)
+            {
+               
+                task.TaskStatus = TStatus.Completed;
+                task.CompletedAt = DateTime.UtcNow;
+                _unitOfWork.GetRepository<SpecialistTask, int>().Update(task);
+            }
+
+            await _unitOfWork.SaveChangesAsync(); 
         }
 
         public async Task<FinalReportResponseDto> GenerateStructuredReportAsync(int childId)
@@ -67,16 +82,18 @@ namespace GraduationProject.Services
             foreach (var task in child.Tasks)
             {
                 fullContext.AppendLine($"النشاط: {task.Title}. وصفه: {task.Description}.");
-                var results = childResults.Where(r => r.SpecialistTaskId == task.Id).ToList();
 
+                
+                if (!string.IsNullOrEmpty(task.MotherNote))
+                {
+                    aggregatedMotherNotes.Append($"{task.Title}: {task.MotherNote}. ");
+                    fullContext.AppendLine($"ملاحظة الأم لنشاط {task.Title}: {task.MotherNote}");
+                }
+
+                var results = childResults.Where(r => r.SpecialistTaskId == task.Id).ToList();
                 foreach (var res in results)
                 {
                     fullContext.AppendLine($"أداء: {res.TimeTaken} ث، {res.TotalMoves} حركة.");
-                    if (!string.IsNullOrEmpty(res.MotherNote))
-                    {
-                        aggregatedMotherNotes.Append($"{task.Title}: {res.MotherNote}. ");
-                        fullContext.AppendLine($"ملاحظة الأم لنشاط {task.Title}: {res.MotherNote}");
-                    }
                 }
             }
 

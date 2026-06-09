@@ -172,7 +172,7 @@ namespace GraduationProject.Services
                 TaskStatus = task.TaskStatus.ToString()
             });
         }
-        public async Task<bool> UpdateTaskStatusAsync(int taskId)
+        public async Task<bool> CompleteTaskWithNoteAsync(int taskId,string MotherNote)
         {
             var task = await _unitOfWork
             .GetRepository<SpecialistTask, int>()
@@ -186,6 +186,7 @@ namespace GraduationProject.Services
 
             task.TaskStatus = TStatus.Completed;
             task.CompletedAt = DateTime.UtcNow;
+            task.MotherNote = MotherNote;
 
             _unitOfWork.GetRepository<SpecialistTask, int>().Update(task);
             await _unitOfWork.SaveChangesAsync();

@@ -12,6 +12,6 @@ namespace GraduationProject.Shared.DTOs.TaskDTOs
         public int? TotalMoves { get; set; }
         public int? TimeTaken { get; set; }
         public int? RoundsCount { get; set; }
-        public string? MotherNote { get; set; }
+   
     }
 }

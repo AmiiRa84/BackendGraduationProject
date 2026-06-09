@@ -30,9 +30,9 @@ namespace GraduationProject.Domain.Data.Entities.TaskModule
 
         //public int ParentId { get; set; }   
         //public Parent Parent { get; set; } = default!;
-
         public int ChildId { get; set; }
         public Child Child { get; set; } = default!;
+        public string? MotherNote { get; set; }
 
     }
 }
