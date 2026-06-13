@@ -4,6 +4,7 @@ using GraduationProject.Persistence.Data.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GraduationProject.Persistence.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    partial class StoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260610235631_FinalReportAIMigrationRawanInshallah")]
+    partial class FinalReportAIMigrationRawanInshallah
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,6 +112,9 @@ namespace GraduationProject.Persistence.Migrations
                     b.Property<int>("ParentId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ParentId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("SpecialistId")
                         .HasColumnType("int");
 
@@ -117,6 +123,8 @@ namespace GraduationProject.Persistence.Migrations
                     b.HasIndex("ChildId");
 
                     b.HasIndex("ParentId");
+
+                    b.HasIndex("ParentId1");
 
                     b.HasIndex("SpecialistId");
 
@@ -535,10 +543,14 @@ namespace GraduationProject.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("GraduationProject.Domain.Entities.ParentModule.Parent", "Parent")
-                        .WithMany("Reports")
+                        .WithMany()
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("GraduationProject.Domain.Entities.ParentModule.Parent", null)
+                        .WithMany("Reports")
+                        .HasForeignKey("ParentId1");
 
                     b.HasOne("GraduationProject.Domain.Data.Entities.SpecialistModule.Specialist", "Specialist")
                         .WithMany("Reports")

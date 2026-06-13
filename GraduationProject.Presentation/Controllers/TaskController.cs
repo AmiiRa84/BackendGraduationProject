@@ -1,6 +1,7 @@
 ﻿using GraduationProject.Services.Abstraction;
 using GraduationProject.Shared.DTOs.ChildDTOs;
 using GraduationProject.Shared.DTOs.TaskDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace GraduationProject.Presentation.Controllers
             _taskService = taskService;
         }
         [HttpGet("predefined")]
+ 
         public async Task<ActionResult<IEnumerable<PredefinedTaskDTO>>> GetAllPredefinedTasks()
         {
             var predefinedTasks = await _taskService.GetAllPredefinedTasksAsync();

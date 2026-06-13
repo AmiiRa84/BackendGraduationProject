@@ -9,6 +9,7 @@ namespace GraduationProject.Shared.DTOs.ChildDTOs
     public class ChildProgressDTO
     {
         public string? SpecialistName { get; set; }
+        public int SpecialistId { get; set; }
         public string? SpecialistEmail { get; set; }
         public string? ParentPhone { get; set; } 
         public string? ParentEmail { get; set; }

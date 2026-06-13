@@ -48,6 +48,7 @@ namespace GraduationProject.Services
             {
 
                 SpecialistName=result.Specialist?.User.FullName,
+                SpecialistId=result.SpecialistId,
                 SpecialistEmail=result.Specialist?.User.Email,
                 ParentName = result.Parent?.User?.FullName,
                 ParentPhone = result.Parent?.User?.PhoneNumber,

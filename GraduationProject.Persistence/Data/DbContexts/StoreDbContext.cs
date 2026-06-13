@@ -4,6 +4,7 @@ using GraduationProject.Domain.Data.Entities.ReportModule;
 using GraduationProject.Domain.Data.Entities.SpecialistModule;
 using GraduationProject.Domain.Data.Entities.TaskModule;
 using GraduationProject.Domain.Entities.ParentModule;
+using GraduationProject.Domain.Entities.ReportModule;
 using GraduationProject.Domain.Entities.SecurityModule;
 using GraduationProject.Domain.Entities.TaskModule;
 using GraduationProject.Persistence.IdentityData;
@@ -32,7 +33,7 @@ namespace GraduationProject.Persistence.Data.DbContexts
         public DbSet<Report> Reports { get; set; }
         public DbSet<TaskResult> TaskResults { get; set; } = default!;
         public DbSet<PreDefinedTask> PreDefinedTasks { get; set; }
-
+        public DbSet<AvatarSessionReport> AvatarSessionReports { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -69,9 +70,10 @@ namespace GraduationProject.Persistence.Data.DbContexts
     .WithMany(c => c.Reports)
     .HasForeignKey(r => r.ChildId)
     .OnDelete(DeleteBehavior.NoAction);
+
             builder.Entity<Report>()
     .HasOne(r => r.Parent)
-    .WithMany()
+    .WithMany(r=>r.Reports)
     .HasForeignKey(r => r.ParentId)
     .OnDelete(DeleteBehavior.NoAction);
         }

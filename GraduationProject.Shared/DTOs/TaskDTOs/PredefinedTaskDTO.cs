@@ -16,6 +16,5 @@ namespace GraduationProject.Shared.DTOs.TaskDTOs
 
         public string TaskType { get; set; } = default!;
 
-        public string? AvatarTopic { get; set; }
     }
 }

@@ -51,7 +51,7 @@ namespace GraduationProject.Persistence.Data.DataSeed
         private async Task SeedFromJson<T,Tkey>(string fileName,DbSet<T> dbset) where T: BaseEntity<Tkey>
         {
             //A:\Backend\Backend Graduation Project\BackendGraduationProject\GraduationProject\GraduationProject.Persistence\Data\DataSeed\JsonFiles\PreDefinedTasks.json
-            var filePath = @"A:\Backend\Backend Graduation Project\BackendGraduationProject\GraduationProject\GraduationProject.Persistence\Data\DataSeed\JsonFiles\" + fileName;
+            var filePath = @"A:\FinalGraduationProject\GraduationProject.Persistence\Data\DataSeed\JsonFiles\" + fileName;
             if (!File.Exists(filePath))
             {
                 throw new FileNotFoundException("Json file not Found ", filePath);

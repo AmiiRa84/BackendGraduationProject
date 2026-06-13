@@ -33,6 +33,7 @@ namespace GraduationProject.Domain.Data.Entities.TaskModule
         public int ChildId { get; set; }
         public Child Child { get; set; } = default!;
         public string? MotherNote { get; set; }
+        public ICollection<TaskResult> TaskResults { get; set; } = new List<TaskResult>();
 
     }
 }

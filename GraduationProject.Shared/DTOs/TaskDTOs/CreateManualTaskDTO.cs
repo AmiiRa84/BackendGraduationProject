@@ -14,7 +14,7 @@ namespace GraduationProject.Shared.DTOs.TaskDTOs
         public string? Description { get; set; }
         public string? TaskType { get; set; }
 
-        public int? PredefinedTaskId { get; set; }  // لو اختار predefined
+        public int? PredefinedTaskId { get; set; }  
 
         [DataType(DataType.Date)]
         [Required] public DateTime DueDate { get; set; }

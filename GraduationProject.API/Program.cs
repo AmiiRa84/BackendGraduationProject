@@ -77,8 +77,12 @@ namespace GraduationProject.API
                 client.DefaultRequestHeaders.ExpectContinue = false;
             });
 
-            // ? EmailService
+            
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddHttpClient<IAIReportService, AIReportService>(client =>
+            {
+                client.BaseAddress = new Uri("https://api.openai.com/");
+            });
             #endregion
 
             var app = builder.Build();

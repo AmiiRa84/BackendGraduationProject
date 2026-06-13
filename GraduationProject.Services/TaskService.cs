@@ -67,7 +67,8 @@ namespace GraduationProject.Services
             }
             else
             {
-                if (!Enum.TryParse<TaskType>(dto.TaskType, true, out var taskTypeEnum))
+                if (!Enum.TryParse<TaskType>(dto.TaskType, true, out var taskTypeEnum)
+    || !Enum.IsDefined(typeof(TaskType), taskTypeEnum))
                     throw new Exception("Invalid TaskType");
 
                 task = new SpecialistTask

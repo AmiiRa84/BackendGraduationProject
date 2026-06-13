@@ -4,6 +4,7 @@ using GraduationProject.Persistence.Data.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GraduationProject.Persistence.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    partial class StoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260609223715_yarabb2a")]
+    partial class yarabb2a
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,6 +112,9 @@ namespace GraduationProject.Persistence.Migrations
                     b.Property<int>("ParentId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ParentId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("SpecialistId")
                         .HasColumnType("int");
 
@@ -117,6 +123,8 @@ namespace GraduationProject.Persistence.Migrations
                     b.HasIndex("ChildId");
 
                     b.HasIndex("ParentId");
+
+                    b.HasIndex("ParentId1");
 
                     b.HasIndex("SpecialistId");
 
@@ -212,31 +220,6 @@ namespace GraduationProject.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Parents");
-                });
-
-            modelBuilder.Entity("GraduationProject.Domain.Entities.ReportModule.AvatarSessionReport", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AvatarReport")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ChildId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChildId");
-
-                    b.ToTable("AvatarSessionReports");
                 });
 
             modelBuilder.Entity("GraduationProject.Domain.Entities.SecurityModule.ApplicationUser", b =>
@@ -535,10 +518,14 @@ namespace GraduationProject.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("GraduationProject.Domain.Entities.ParentModule.Parent", "Parent")
-                        .WithMany("Reports")
+                        .WithMany()
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("GraduationProject.Domain.Entities.ParentModule.Parent", null)
+                        .WithMany("Reports")
+                        .HasForeignKey("ParentId1");
 
                     b.HasOne("GraduationProject.Domain.Data.Entities.SpecialistModule.Specialist", "Specialist")
                         .WithMany("Reports")
@@ -592,19 +579,10 @@ namespace GraduationProject.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GraduationProject.Domain.Entities.ReportModule.AvatarSessionReport", b =>
-                {
-                    b.HasOne("GraduationProject.Domain.Data.Entities.ChildModule.Child", null)
-                        .WithMany("AvatarSessionReports")
-                        .HasForeignKey("ChildId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("GraduationProject.Domain.Entities.TaskModule.TaskResult", b =>
                 {
                     b.HasOne("GraduationProject.Domain.Data.Entities.TaskModule.SpecialistTask", "SpecialistTask")
-                        .WithMany("TaskResults")
+                        .WithMany()
                         .HasForeignKey("SpecialistTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -665,8 +643,6 @@ namespace GraduationProject.Persistence.Migrations
 
             modelBuilder.Entity("GraduationProject.Domain.Data.Entities.ChildModule.Child", b =>
                 {
-                    b.Navigation("AvatarSessionReports");
-
                     b.Navigation("Reports");
 
                     b.Navigation("Tasks");
@@ -677,11 +653,6 @@ namespace GraduationProject.Persistence.Migrations
                     b.Navigation("Childs");
 
                     b.Navigation("Reports");
-                });
-
-            modelBuilder.Entity("GraduationProject.Domain.Data.Entities.TaskModule.SpecialistTask", b =>
-                {
-                    b.Navigation("TaskResults");
                 });
 
             modelBuilder.Entity("GraduationProject.Domain.Entities.ParentModule.Parent", b =>

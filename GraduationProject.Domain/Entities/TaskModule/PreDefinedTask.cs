@@ -15,6 +15,5 @@ namespace GraduationProject.Domain.Entities.TaskModule
 
         public TaskType TaskType { get; set; }
 
-        public string? AvatarTopic { get; set; }
     }
 }

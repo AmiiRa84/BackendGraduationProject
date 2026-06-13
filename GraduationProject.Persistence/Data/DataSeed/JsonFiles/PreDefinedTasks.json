@@ -5,81 +5,88 @@
     "taskType": "RealWorld"
   },
   {
-    "title": "Complete 6-piece puzzle",
-    "description": "Child completes a 6-piece puzzle.",
-    "taskType": "RealWorld"
-  },
-  {
-    "title": "Sort objects by color",
-    "description": "Child sorts objects into groups based on color.",
-    "taskType": "RealWorld"
-  },
-  {
-    "title": "Organize school bag",
-    "description": "Child organizes books and supplies in school bag.",
-    "taskType": "RealWorld"
-  },
-  {
     "title": "Wash hands properly",
     "description": "Child washes hands following proper steps.",
     "taskType": "RealWorld"
   },
   {
-    "title": "Trace 3 letters",
-    "description": "Child traces three letters accurately.",
-    "taskType": "Mobile",
-    "avatarTopic": "Letters & Writing"
-  },
-  {
-    "title": "Read 5 sight words",
-    "description": "Child reads 5 common sight words correctly.",
-    "taskType": "Mobile",
-    "avatarTopic": "Reading"
-  },
-  {
-    "title": "Count from 1 to 20",
-    "description": "Child counts numbers from 1 to 20 without help.",
-    "taskType": "Mobile",
-    "avatarTopic": "Numbers"
-  },
-  {
-    "title": "Express today's feeling",
-    "description": "Child chooses or says how they feel today.",
-    "taskType": "Mobile",
-    "avatarTopic": "Emotions"
-  },
-  {
-    "title": "Describe a picture in one sentence",
-    "description": "Child describes what is happening in a picture using one sentence.",
-    "taskType": "Mobile",
-    "avatarTopic": "Communication"
-  },
-  {
-    "title": "Emotional regulation breathing exercise",
-    "description": "Child follows guided breathing exercise for 2 minutes.",
-    "taskType": "Mobile",
-    "avatarTopic": "Emotional Regulation"
-  },
-  {
-    "title": "Memory card game (5 pairs)",
-    "description": "Child matches 5 pairs of memory cards.",
-    "taskType": "Mobile",
-    "avatarTopic": "Memory"
-  },
-  {
-    "title": "Match identical pictures",
-    "description": "Child matches identical picture cards.",
+    "title": "Comb hair independently",
+    "description": "Child combs their hair without help.",
     "taskType": "RealWorld"
   },
   {
-    "title": "Name 5 animals",
-    "description": "Child names five animals shown in pictures.",
-    "taskType": "Mobile",
-    "avatarTopic": "Animals & Vocabulary"
+    "title": "Wear clothes independently",
+    "description": "Child puts on their clothes without help.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Use the bathroom independently",
+    "description": "Child uses the bathroom without help.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Greet others politely",
+    "description": "Child says hello and goodbye to people around them.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Share toys with others",
+    "description": "Child shares their toys with a sibling or friend.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Wait for their turn",
+    "description": "Child waits patiently for their turn during an activity.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Make eye contact while talking",
+    "description": "Child maintains eye contact during a conversation.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Say please and thank you",
+    "description": "Child uses polite words in appropriate situations.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Help set the table",
+    "description": "Child helps place plates and cups on the table before a meal.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Put toys away after playing",
+    "description": "Child tidies up and puts toys back in their place.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Carry their school bag",
+    "description": "Child carries their school bag independently.",
+    "taskType": "RealWorld"
   },
   {
     "title": "Follow 2-step instructions",
-    "description": "Child follows two-step instructions given by Specialist.",
+    "description": "Child follows two-step instructions given by a parent or specialist.",
     "taskType": "RealWorld"
+  },
+  {
+    "title": "Complete a simple puzzle",
+    "description": "Child completes a simple puzzle independently.",
+    "taskType": "RealWorld"
+  },
+  {
+    "title": "Color Match",
+    "description": "Child matches objects or cards by color.",
+    "taskType": "Mobile"
+  },
+  {
+    "title": "Memory Cards",
+    "description": "Child matches pairs of memory cards.",
+    "taskType": "Mobile"
+  },
+  {
+    "title": "Emotion Recognition",
+    "description": "Child identifies and matches facial expressions to the correct emotion.",
+    "taskType": "Mobile"
   }
 ]
