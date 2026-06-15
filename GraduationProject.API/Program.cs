@@ -83,6 +83,7 @@ namespace GraduationProject.API
             {
                 client.BaseAddress = new Uri("https://api.openai.com/");
             });
+       
             #endregion
 
             var app = builder.Build();

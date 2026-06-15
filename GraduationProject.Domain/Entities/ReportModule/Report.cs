@@ -17,12 +17,10 @@ namespace GraduationProject.Domain.Data.Entities.ReportModule
 
         public int ChildId { get; set; }
         public Child Child { get; set; } = default!;
-
-        //34an a3raf men l specialist lli 3ml report dah => nav prop
         public int SpecialistId { get; set; }
         public Specialist Specialist { get; set; } = default!;
 
-        public int ParentId { get; set; }       // mandatory
+        public int ParentId { get; set; }      
         public Parent Parent { get; set; } = default!;
 
     }

@@ -22,6 +22,7 @@ namespace GraduationProject.Domain.Data.Entities.SpecialistModule
       
         public ICollection<Child> Childs { get; set; } = new LinkedList<Child>();
 
+
     }
 
 

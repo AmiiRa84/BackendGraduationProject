@@ -121,7 +121,7 @@ namespace GraduationProject.Services
                 await childRepo.AddAsync(child);
                 await _unitOfWork.SaveChangesAsync();
 
-                // ✅ اعمل Chat بين الـ Parent والـ Specialist بتاع كل Child
+                
                 try
                 {
                     await _sendbirdService.CreateChatBetweenParentAndSpecialistAsync(
@@ -177,7 +177,6 @@ namespace GraduationProject.Services
             await specialistRepo.AddAsync(specialist);
             await _unitOfWork.SaveChangesAsync();
 
-            // SendBird - فشله مش بيوقف الـ Registration
             try { await _sendbirdService.CreateUserAsync($"specialist_{specialist.Id}", user.FullName); }
             catch (Exception ex) { _logger.LogWarning(ex, "SendBird failed for specialist_{Id}", specialist.Id); }
 
@@ -186,7 +185,7 @@ namespace GraduationProject.Services
                 Success = true,
                 msg = $"Specialist with id {specialist.Id} registered successfully",
                 Id = user.Id,
-                FrontendId = specialist.Id,   // ← ده اللي ناقص
+                FrontendId = specialist.Id,  
                 Email = dto.Email
             };
         }

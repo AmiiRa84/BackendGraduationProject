@@ -21,5 +21,6 @@ namespace GraduationProject.Domain.Entities.SecurityModule
         public Parent? Parent { get; set; }
 
 
+
     }
 }
