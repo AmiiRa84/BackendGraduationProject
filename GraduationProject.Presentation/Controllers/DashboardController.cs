@@ -24,7 +24,7 @@ namespace GraduationProject.Presentation.Controllers
         {
             try
             {
-                // مننادي الميثود اللي ضبطنا الكود بتاعها
+               
                 var results = await _dashboardService.GetParentsWithChildrenAndTasksBySpecialistIdAsync(specialistId);
 
                 if (results == null || !results.Any())

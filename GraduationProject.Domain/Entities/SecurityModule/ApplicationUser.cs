@@ -15,11 +15,9 @@ namespace GraduationProject.Domain.Entities.SecurityModule
     {
         public string FullName { get; set; } = default!;
         public Address Address { get; set; } = default!;
-
-        
         public Specialist? Specialist { get; set; }
         public Parent? Parent { get; set; }
-
+        public ICollection<UserDeviceToken> DeviceTokens { get; set; } = new List<UserDeviceToken>();
 
 
     }

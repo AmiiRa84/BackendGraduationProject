@@ -5,11 +5,13 @@ using GraduationProject.Domain.Data.Entities.SpecialistModule;
 using GraduationProject.Domain.Data.Entities.TaskModule;
 using GraduationProject.Domain.Data.Entities.TaskModule.Enums;
 using GraduationProject.Domain.Entities.TaskModule;
+using GraduationProject.Domain.Entities.TaskModule.Enums;
 using GraduationProject.Services.Abstraction;
 using GraduationProject.Services.Exceptions;
 using GraduationProject.Shared.DTOs.ChildDTOs;
 using GraduationProject.Shared.DTOs.TaskDTOs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -23,16 +25,19 @@ namespace GraduationProject.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly INotificationService _notificationService;
+   
 
-        public TaskService(IUnitOfWork unitOfWork, IMapper mapper)
+        public TaskService(IUnitOfWork unitOfWork, IMapper mapper,INotificationService notificationService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+           _notificationService = notificationService;
+           
         }
 
         public async Task<CreateManualTaskDTO> CreateManualTaskAsync(CreateManualTaskDTO dto)
         {
-          
             var child = await _unitOfWork.GetRepository<Child, int>()
                 .GetByIdAsync(dto.ChildId)
                 ?? throw new Exception("Child not found");
@@ -40,7 +45,6 @@ namespace GraduationProject.Services
             if (child.SpecialistId != dto.SpecialistId)
                 throw new Exception("This Specialist cannot assign task to this Child");
 
-         
             SpecialistTask task;
 
             if (dto.PredefinedTaskId.HasValue)
@@ -61,14 +65,12 @@ namespace GraduationProject.Services
                     Source = TaskSource.Predefined,
                     ChildId = child.Id,
                     PredefinedTaskId = predefined.Id
-                    
-                    
                 };
             }
             else
             {
                 if (!Enum.TryParse<TaskType>(dto.TaskType, true, out var taskTypeEnum)
-    || !Enum.IsDefined(typeof(TaskType), taskTypeEnum))
+                    || !Enum.IsDefined(typeof(TaskType), taskTypeEnum))
                     throw new Exception("Invalid TaskType");
 
                 task = new SpecialistTask
@@ -81,19 +83,31 @@ namespace GraduationProject.Services
                     TaskStatus = TStatus.Pending,
                     Source = TaskSource.Custom,
                     ChildId = child.Id
-                    
-                    
                 };
             }
 
-         
             await _unitOfWork.GetRepository<SpecialistTask, int>().AddAsync(task);
             await _unitOfWork.SaveChangesAsync();
 
+            var childWithParent = (await _unitOfWork.GetRepository<Child, int>()
+                .GetAllAsync(q => q.Where(c => c.Id == child.Id)
+                    .Include(c => c.Parent).ThenInclude(p => p.User)))
+                .FirstOrDefault();
+
+            var parentUser = childWithParent?.Parent?.User;
+            if (parentUser != null)
+            {
+                await _notificationService.SendToUserAsync(
+         parentUser.Id,
+         "New Task",
+         $"New Task is Added to {child.Name}",
+         NotificationType.TaskAssigned.ToString());
+            }
+
             return _mapper.Map<CreateManualTaskDTO>(task);
         }
-            
-        
+
+      
 
         public async Task<IEnumerable<PredefinedTaskDTO>> GetAllPredefinedTasksAsync()
         {
@@ -122,6 +136,7 @@ namespace GraduationProject.Services
                 q.Where(t => t.ChildId == childId && t.TaskStatus == TStatus.Completed));
 
             return tasks.Count();
+
         }
 
         public async Task<IEnumerable<ChildTaskDTO>> GetTasksByChildIdAsync(int childId)
@@ -173,11 +188,12 @@ namespace GraduationProject.Services
                 TaskStatus = task.TaskStatus.ToString()
             });
         }
-        public async Task<bool> CompleteTaskWithNoteAsync(int taskId,string MotherNote)
+        public async Task<bool> CompleteTaskWithNoteAsync(int taskId, string MotherNote)
         {
-            var task = await _unitOfWork
-            .GetRepository<SpecialistTask, int>()
-            .GetByIdAsync(taskId);
+            var task = (await _unitOfWork.GetRepository<SpecialistTask, int>()
+                .GetAllAsync(q => q.Where(t => t.Id == taskId)
+                    .Include(t => t.Child).ThenInclude(c => c.Specialist).ThenInclude(s => s.User)))
+                .FirstOrDefault();
 
             if (task == null)
                 throw new TaskNotFoundException(taskId);
@@ -192,8 +208,25 @@ namespace GraduationProject.Services
             _unitOfWork.GetRepository<SpecialistTask, int>().Update(task);
             await _unitOfWork.SaveChangesAsync();
 
-            return true;
+            try
+            {
+                var specialistUser = task.Child?.Specialist?.User;
+                Console.WriteLine($"Specialist User Id = {specialistUser?.Id}");
+                if (specialistUser != null)
+                {
 
+                    await _notificationService.SendToUserAsync(
+                        specialistUser.Id,
+                        "Task is Completed",
+                        $"{task.Child!.Name} completed the task",
+                        NotificationType.TaskCompleted.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"FCM Error: {ex.Message}");
+            }
+            return true;
         }
         public async Task<List<TaskDetailsDTO>> GetTasksDetailsMobileApp(int childId)
         {

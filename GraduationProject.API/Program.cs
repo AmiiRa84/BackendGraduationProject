@@ -2,6 +2,7 @@ using ECommerce.API.Extensions;
 using ECommerce.Domain.Contracts;
 using ECommerce.persistence.Repositories;
 using GraduationProject.API.CustomMiddlewares;
+using GraduationProject.API.Extensions;
 using GraduationProject.Domain.Contracts;
 using GraduationProject.Domain.Entities.SecurityModule;
 using GraduationProject.Persistence.Data.DataSeed;
@@ -83,7 +84,7 @@ namespace GraduationProject.API
             {
                 client.BaseAddress = new Uri("https://api.openai.com/");
             });
-       
+           await builder.Services.AddFirebaseServices();
             #endregion
 
             var app = builder.Build();
